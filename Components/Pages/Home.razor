@@ -1,0 +1,25 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ShopContext> DbFactory
+@inject ILoggerFactory LoggerFactory
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<button @onclick="@(async () => await Load())">hi</button>
+
+@code {
+
+    protected async Task Load()
+    {
+        await using var context = await DbFactory.CreateDbContextAsync();
+        await using var tran = context.Database.BeginTransaction();
+        var logger = LoggerFactory.CreateLogger<Home>();
+        logger.LogWarning("hi");
+    }
+
+}
