@@ -10,16 +10,8 @@
 
 Welcome to your new app.
 
-<button @onclick="@(async () => await Load())">hi</button>
+<button @onclick="() => { }">hi</button>
 
 @code {
-
-    protected async Task Load()
-    {
-        await using var context = await DbFactory.CreateDbContextAsync();
-        await using var tran = context.Database.BeginTransaction();
-        var logger = LoggerFactory.CreateLogger<Home>();
-        logger.LogWarning("hi");
-    }
-
+    
 }
