@@ -14,9 +14,14 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.8" />
   </ItemGroup>
 
+<!--  <ItemGroup>-->
+<!--    <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css" />-->
+<!--    <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css.map" />-->
+<!--  </ItemGroup>-->
+  
   <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css" />
-    <_ContentIncludedByDefault Remove="wwwroot\bootstrap\bootstrap.min.css.map" />
+    <UpToDateCheckBuilt Include="Styles/tailwind.css" Set="Css" />
+    <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
   </ItemGroup>
 
 </Project>

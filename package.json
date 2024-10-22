@@ -1,0 +1,13 @@
+{
+  "name": "petshop",
+  "version": "1.0.0",
+  "scripts": {
+    "mix": "npx tailwindcss -i ./Styles/tailwind.css -o ./wwwroot/output.css --minify"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "tailwindcss": "^3.4.14"
+  }
+}

@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
+<div>
+    <div class="sticky inset-x-0 auto-limit-w">
         <NavMenu />
     </div>
 
@@ -16,7 +16,7 @@
     </main>
 </div>
 
-<div id="blazor-error-ui">
+<div id="blazor-error-ui" class="fixed inset-0 hidden">
     An unhandled error has occurred.
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
