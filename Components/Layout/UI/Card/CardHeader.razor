@@ -1,0 +1,11 @@
+﻿<div @attributes=AdditionalAttributes class="flex flex-col space-y-1.5 p-6 @(AdditionalAttributes?["class"] ?? "")">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IDictionary<string, object>? AdditionalAttributes { get; set; }
+}

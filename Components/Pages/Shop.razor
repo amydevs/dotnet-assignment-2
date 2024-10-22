@@ -1,0 +1,40 @@
+@page "/shop"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using PetShop.Components.Layout.UI.Card
+@inject IDbContextFactory<ShopContext> DbFactory
+
+<main>
+    <section class="auto-limit-w grid grid-cols-[repeat(auto-fill,20rem)] gap-3 justify-center">
+        @foreach (var product in Products)
+        {
+            <NavLink href=@ProductToHref(product)>
+                <Card class="h-full">
+                    <CardHeader />
+                    <CardContent>
+                        <img src="/images/products/@(product.Id).png"/>
+                    </CardContent>
+                    <CardHeader>
+                        <CardTitle>@product.Name</CardTitle>
+                        <CardDescription>$@(product.Price / 100.0)</CardDescription>
+                    </CardHeader>
+                </Card>
+            </NavLink>
+        }
+    </section>
+</main>
+
+@code {
+    ShopContext Context { get; set; }
+    Product[] Products { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+        Context = DbFactory.CreateDbContext();
+        Products = Context.Products.ToArray();
+    }
+
+    private string ProductToHref(Product product)
+    {
+        return $"/shop/products/{product.Id}";
+    }
+}

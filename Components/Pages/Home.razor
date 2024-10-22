@@ -1,16 +1,102 @@
 ﻿@page "/"
 @rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
+@using PetShop.Components.Layout.UI
+@using PetShop.Components.Layout.UI.Card
 @inject IDbContextFactory<ShopContext> DbFactory
 @inject ILoggerFactory LoggerFactory
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<button @onclick="() => { }">hi</button>
+<main class="space-y-3">
+    <section class="auto-limit-w flex flex-col items-center px-4 gap-8 min-h-[calc(100vh-9rem)]">
+        <div class="space-y-3">
+            <h2 class="font-semibold text-2xl md:text-6xl text-center"><span class="text-primary">Care Buddies</span> - Tailored Love and Care for Every Kind of Animal!</h2>
+            <h3 class="text-lg md:text-2xl text-center">Where Every Pet Finds Expert Care and Endless Joy!</h3>
+        </div>
+        <div class="flex gap-5">
+            <Button class="bg-primary text-primary-foreground">
+                Shop
+            </Button>
+            <Button class="border border-input bg-background">
+                Pet Services
+            </Button>
+        </div>
+        <div class="flex-1" />
+        <div class="relative -mt-32 md:-mt-64 max-w-4xl -z-10">
+            <div class="absolute inset-0 bg-gradient-to-t from-white to-20% to-white/0"/>
+            <img class="" src="home/hero.png"/>
+        </div>
+        <div class="flex-1" />
+    </section>
+    <section class="auto-limit-w space-y-16 px-4">
+        <div class="space-y-3">
+            <h3 class="font-semibold text-primary text-xl md:text-5xl">Comprehensive Services For Your Beloved Pets</h3>
+            <p>We provide everything your pet needs – from pampering grooming sessions to regular health checkups and loving pet sitting services. Trust us to treat them like family!</p>
+        </div>
+        <Card>
+            <CardHeader class="text-primary text-4xl">
+                Vet Check-up and Care
+            </CardHeader>
+            <CardContent>
+                <p>
+                    Prioritize your pet’s health with our comprehensive vet checkups. Our skilled veterinarians provide preventive care, diagnostics, and treatment to keep them in peak condition.
+                </p>
+            </CardContent>
+            <CardFooter>
+                <Button class="bg-primary text-primary-foreground">
+                    See More
+                </Button>
+            </CardFooter>
+        </Card>
+        <Card>
+            <CardHeader class="text-primary text-4xl">
+                Pet Grooming
+            </CardHeader>
+            <CardContent>
+                <p>
+                    Prioritize your pet’s health with our comprehensive vet checkups. Our skilled veterinarians provide preventive care, diagnostics, and treatment to keep them in peak condition.
+                </p>
+            </CardContent>
+            <CardFooter>
+                <Button class="bg-primary text-primary-foreground">
+                    See More
+                </Button>
+            </CardFooter>
+        </Card>
+        <Card>
+            <CardHeader class="text-primary text-4xl">
+                Pet Sitting
+            </CardHeader>
+            <CardContent>
+                <p>
+                    Rest easy knowing your pet is in good hands. Our pet sitting service provides attentive care, playtime, and companionship to keep your furry friend happy while
+                    you're away.
+                </p>
+            </CardContent>
+            <CardFooter>
+                <Button class="bg-primary text-primary-foreground">
+                    See More
+                </Button>
+            </CardFooter>
+        </Card>
+        <Card>
+            <CardHeader class="text-primary text-4xl">
+                Pet Shop
+            </CardHeader>
+            <CardContent>
+                <p>
+                    Find everything your pet needs in our fully stocked pet shop. From food and toys to accessories and supplies, we offer a range of quality products for pets of all types.
+                </p>
+            </CardContent>
+            <CardFooter>
+                <Button class="bg-primary text-primary-foreground">
+                    See More
+                </Button>
+            </CardFooter>
+        </Card>
+    </section>
+</main>
 
 @code {
     

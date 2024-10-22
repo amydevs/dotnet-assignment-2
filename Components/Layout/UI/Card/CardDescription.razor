@@ -1,0 +1,11 @@
+﻿<p @attributes=AdditionalAttributes class="text-sm text-muted-foreground @(AdditionalAttributes?["class"] ?? "")">
+    @ChildContent
+</p>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IDictionary<string, object>? AdditionalAttributes { get; set; }
+}

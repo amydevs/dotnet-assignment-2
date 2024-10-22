@@ -1,0 +1,11 @@
+﻿<div @attributes=AdditionalAttributes class="rounded-lg border bg-card text-card-foreground shadow-sm @(AdditionalAttributes?["class"] ?? "")">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IDictionary<string, object>? AdditionalAttributes { get; set; }
+}
