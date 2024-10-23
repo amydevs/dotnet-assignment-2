@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
@@ -23,6 +24,7 @@ public class ShopContext: DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder options)
         => options
             .UseSqlite($"Data Source={DbPath}")
+            .UseLazyLoadingProxies()
             .UseSeeding((context, _) =>
             {
                 var categories = context.Set<Category>().ToArray();
@@ -120,7 +122,8 @@ public class CartProduct
 {
     public int Id { get; set; }
     public int ProductId { get; set; }
-    public Product Product { get; set; }
+    [ForeignKey(nameof(ProductId))]
+    public virtual Product Product { get; set; }
     public int Quantity { get; set; }
 }
 
@@ -136,5 +139,5 @@ public class Product
     public string Name { get; set; }
     public int Price { get; set; }
     public string Description { get; set; }
-    public Category Category { get; set; }
+    public virtual Category Category { get; set; }
 }

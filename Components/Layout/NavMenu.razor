@@ -1,6 +1,8 @@
 ﻿@rendermode InteractiveServer
 @using PetShop.Components.Layout.Icons
 @using PetShop.Components.Layout.UI
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ShopContext> DbFactory
 
 <div class="flex justify-between items-center h-36 px-4">
     <NavLink href="/">
@@ -27,7 +29,7 @@
 </div>
 <div class="fixed inset-0 flex @(CurrentNavMenuState == NavMenuState.NavOpen ? "" : "hidden") md:hidden">
     <div class="flex-1 bg-black/20" @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }"></div>
-    <div class="bg-background min-w-96 px-8 py-14 space-y-5">
+    <div class="bg-background max-w-xl w-full px-8 py-14 space-y-5">
         <div class="border-b border-border pb-5 flex">
             <h2 class="text-primary font-semibold text-3xl flex-1">
                 Menu
@@ -48,27 +50,60 @@
 </div>
 <div class="fixed inset-0 flex @(CurrentNavMenuState == NavMenuState.CartOpen ? "" : "hidden")">
     <div class="flex-1 bg-black/20" @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }"></div>
-    <div class="bg-background min-w-96 px-8 py-14 space-y-5">
+    <div class="bg-background max-w-xl w-full px-8 py-14 flex flex-col gap-5 relative">
         <div class="border-b border-border pb-5 flex">
             <h2 class="text-primary font-semibold text-3xl flex-1">
-                CartItem
+                Cart
             </h2>
             <Button @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }">
                 <XIcon />
             </Button>
         </div>
-        <nav class="flex flex-col gap-5">
-            @foreach (Route route in _routes)
+        <div class="flex flex-col gap-5 flex-1 overflow-y-auto">
+            @foreach (CartProduct cartProduct in Context.CartProducts.AsNoTracking())
             {
-                <NavLink @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }" class="text-foreground/50 hover:text-foreground active:text-foreground" href=@route.Href Match=@route.Match>
-                    @route.Title
-                </NavLink>
+                <div class="flex h-32 gap-3 w-full">
+                    <img src="images/products/@(cartProduct.ProductId).png" />
+                    <div class="flex flex-col justify-center gap-3 w-full">
+                        <span class="text-ellipsis overflow-hidden whitespace-nowrap min-w-full w-0">
+                            @cartProduct.Product.Name
+                        </span>
+                        <span>
+                            $@(cartProduct.Product.Price / 100.0)
+                        </span>
+                        <div class="flex items-center gap-3 justify-between">
+                            <div class="flex items-center gap-3">
+                                <span>
+                                    Quantity:
+                                </span>
+                                <Input class="!w-16" value="@cartProduct.Quantity" @onchange="async (e) => { await SetCartProductQuantity(cartProduct, int.Parse((string)e.Value)); }" type="number"/>
+                            </div>
+                            <Button @onclick="async () => { await SetCartProductQuantity(cartProduct, 0); }" class="bg-destructive text-destructive-foreground">
+                                <XIcon />
+                            </Button>
+                        </div>
+                    </div>
+                </div>
             }
-        </nav>
+        </div>
+        <div class="h-16 space-y-8">
+            <span class="flex justify-between text-2xl">
+                <span>
+                    Total:
+                </span>
+                <span>
+                    $@(Context.CartProducts.AsNoTracking().ToArray().Aggregate(0, (acc, e) => acc + e.Product.Price * e.Quantity) / 100.0)
+                </span>
+            </span>
+            <Button class="w-full bg-primary text-primary-foreground">
+                Checkout
+            </Button>
+        </div>
     </div>
 </div>
 
 @code {
+
     private struct Route
     {
         public string Href { get; set; }
@@ -108,10 +143,29 @@
     }
 
     private NavMenuState CurrentNavMenuState { get; set; } = NavMenuState.Default;
-
-    protected override Task OnInitializedAsync()
+    private ShopContext Context { get; set; }
+    
+    protected override async Task OnInitializedAsync()
     {
-        return base.OnInitializedAsync();
+        Context = await DbFactory.CreateDbContextAsync();
+        Context.ChangeTracker.AutoDetectChangesEnabled = true;
+        Context.ChangeTracker.DetectChanges();
+        Console.WriteLine(Context.ChangeTracker.DebugView.LongView);
     }
 
+    private async Task SetCartProductQuantity(CartProduct cartProduct, int quantity)
+    {
+        Context.Update(cartProduct);
+        if (quantity == 0)
+        {
+            Context.CartProducts.Remove(cartProduct);
+        }
+        else
+        {
+            cartProduct.Quantity = quantity;
+        }
+        await Context.SaveChangesAsync();
+        // manually untrack all in context
+        Context.ChangeTracker.Clear();
+    }
 }
