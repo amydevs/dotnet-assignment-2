@@ -1,4 +1,4 @@
-﻿<button @attributes=AdditionalAttributes class="inline-flex items-center justify-center h-10 px-4 py-2 rounded-md @(AdditionalAttributes?["class"] ?? "")">
+﻿<button @attributes=AdditionalAttributes class="inline-flex items-center justify-center h-10 px-4 py-2 rounded-md @(AdditionalAttributes?.ContainsKey("class") ?? false ? AdditionalAttributes["class"] : "")">
     @ChildContent
 </button>
 

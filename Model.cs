@@ -9,6 +9,7 @@ public class ShopContext: DbContext
     public string DbPath { get; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<CartProduct> CartProducts { get; set; }
 
     public ShopContext()
     {
@@ -112,6 +113,15 @@ public class ShopContext: DbContext
                     task.Wait();
                 }
             });
+}
+
+[Index(nameof(ProductId), IsUnique = true)]
+public class CartProduct
+{
+    public int Id { get; set; }
+    public int ProductId { get; set; }
+    public Product Product { get; set; }
+    public int Quantity { get; set; }
 }
 
 public class Category

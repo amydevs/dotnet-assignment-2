@@ -1,10 +1,14 @@
-﻿<div class="flex justify-between items-center h-36 px-4">
+﻿@rendermode InteractiveServer
+@using PetShop.Components.Layout.Icons
+@using PetShop.Components.Layout.UI
+
+<div class="flex justify-between items-center h-36 px-4">
     <NavLink href="/">
         <img class="h-20 w-20" src="/icon.png" alt="icon" />
     </NavLink>
-    <div class="gap-8 items-center justify-center">
+    <div class="gap-8 items-center justify-center hidden md:inline">
         <nav class="flex gap-5">
-            @foreach(Route route in routes)
+            @foreach(Route route in _routes)
             {
                 <NavLink class="text-foreground/50 hover:text-foreground active:text-foreground" href=@route.Href Match=@route.Match>
                     @route.Title
@@ -12,25 +16,67 @@
             }
         </nav>
     </div>
-    <div class="flex gap-5">
-        <button class="bg-primary text-primary-foreground inline-flex items-center justify-center h-10 px-4 py-2 rounded-md">
-            Cart
-        </button>
-        <button class="bg-primary/20 text-primary inline-flex items-center justify-center h-10 px-4 py-2 rounded-md">
-            Login
-        </button>
+    <div class="flex">
+        <Button @onclick="() => { CurrentNavMenuState = NavMenuState.CartOpen; }">
+            <CartIcon/>
+        </Button>
+        <Button class="md:hidden" @onclick="() => { CurrentNavMenuState = NavMenuState.NavOpen; }">
+            <MenuIcon />
+        </Button>
+    </div>
+</div>
+<div class="fixed inset-0 flex @(CurrentNavMenuState == NavMenuState.NavOpen ? "" : "hidden") md:hidden">
+    <div class="flex-1 bg-black/20" @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }"></div>
+    <div class="bg-background min-w-96 px-8 py-14 space-y-5">
+        <div class="border-b border-border pb-5 flex">
+            <h2 class="text-primary font-semibold text-3xl flex-1">
+                Menu
+            </h2>
+            <Button @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }">
+                <XIcon />
+            </Button>
+        </div>
+        <nav class="flex flex-col gap-5">
+            @foreach (Route route in _routes)
+            {
+                <NavLink @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }" class="text-foreground/50 hover:text-foreground active:text-foreground" href=@route.Href Match=@route.Match>
+                    @route.Title
+                </NavLink>
+            }
+        </nav>
+    </div>
+</div>
+<div class="fixed inset-0 flex @(CurrentNavMenuState == NavMenuState.CartOpen ? "" : "hidden")">
+    <div class="flex-1 bg-black/20" @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }"></div>
+    <div class="bg-background min-w-96 px-8 py-14 space-y-5">
+        <div class="border-b border-border pb-5 flex">
+            <h2 class="text-primary font-semibold text-3xl flex-1">
+                CartItem
+            </h2>
+            <Button @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }">
+                <XIcon />
+            </Button>
+        </div>
+        <nav class="flex flex-col gap-5">
+            @foreach (Route route in _routes)
+            {
+                <NavLink @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }" class="text-foreground/50 hover:text-foreground active:text-foreground" href=@route.Href Match=@route.Match>
+                    @route.Title
+                </NavLink>
+            }
+        </nav>
     </div>
 </div>
 
 @code {
-
     private struct Route
     {
         public string Href { get; set; }
         public string Title { get; set; }
         public NavLinkMatch Match { get; set; }
     }
-    private static Route[] routes = [
+    
+    private static Route[] _routes = [
         new Route
         {
             Href = "/",
@@ -53,5 +99,19 @@
             Title = "Services",
         },
     ];
+    
+    private enum NavMenuState
+    {
+        Default,
+        NavOpen,
+        CartOpen,
+    }
+
+    private NavMenuState CurrentNavMenuState { get; set; } = NavMenuState.Default;
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
 
 }
