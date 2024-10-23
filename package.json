@@ -2,12 +2,13 @@
   "name": "petshop",
   "version": "1.0.0",
   "scripts": {
-    "mix": "tailwindcss -i ./Styles/tailwind.css -o ./wwwroot/app.css --minify"
+    "mix": "cross-env NODE_ENV=production tailwindcss -i ./Styles/tailwind.css -o ./wwwroot/app.css --minify"
   },
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "cross-env": "^7.0.3",
     "tailwindcss": "^3.4.14"
   }
 }

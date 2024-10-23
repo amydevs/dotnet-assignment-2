@@ -263,3 +263,4 @@ __pycache__/
 # Database Stuff
 shop.db*
 wwwroot/images/products
+wwwroot/app.css
