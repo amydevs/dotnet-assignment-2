@@ -1,4 +1,4 @@
-﻿<p @attributes=AdditionalAttributes class="text-sm text-muted-foreground @(AdditionalAttributes?["class"] ?? "")">
+﻿<p @attributes=AdditionalAttributes class="text-sm text-muted-foreground @(AdditionalAttributes?.ContainsKey("class") ?? false ? AdditionalAttributes["class"] : "")">
     @ChildContent
 </p>
 

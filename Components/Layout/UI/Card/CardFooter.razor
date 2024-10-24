@@ -1,4 +1,4 @@
-﻿<div @attributes=AdditionalAttributes class="flex items-center p-6 pt-0 @(AdditionalAttributes?["class"] ?? "")">
+﻿<div @attributes=AdditionalAttributes class="flex items-center p-6 pt-0 @(AdditionalAttributes?.ContainsKey("class") ?? false ? AdditionalAttributes["class"] : "")">
     @ChildContent
 </div>
 

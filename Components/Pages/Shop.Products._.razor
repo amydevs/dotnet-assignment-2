@@ -19,7 +19,7 @@
                 </p>
             </div>
             <div class="grid grid-cols-2 grid-rows-2 gap-8">
-                <Button class="bg-primary text-primary-foreground col-span-2">
+                <Button @onclick="AddToCart" class="bg-primary text-primary-foreground col-span-2">
                     Add to Cart
                 </Button>
                 <Button class="border border-input bg-background">
@@ -45,13 +45,34 @@
     [Parameter]
     public string Slug { get; set; }
 
-    ShopContext Context { get; set; }
     Product Product { get; set; }
     
     protected override async Task OnInitializedAsync()
     {
-        Context = DbFactory.CreateDbContext();
-        Product = Context.Products.Find([int.Parse(Slug)])!;
+        var context = await DbFactory.CreateDbContextAsync();
+        Product = (await context.Products.FindAsync([int.Parse(Slug)]))!;
+        // context is disposed, tracking is lost
     }
 
+    private async Task AddToCart()
+    {
+        var context = await DbFactory.CreateDbContextAsync();
+        try
+        {
+            var cartProduct = context.CartProducts.First(e => e.ProductId == Product.Id);
+            cartProduct.Quantity += 1;
+        }
+        catch
+        {
+            var cartProduct = new CartProduct
+            {
+                ProductId = Product.Id,
+                Quantity = 1,
+            };
+            await context.CartProducts.AddAsync(cartProduct);
+        }
+        
+        await context.SaveChangesAsync();
+        // context is disposed, tracking is lost
+    }
 }

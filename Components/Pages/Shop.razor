@@ -25,12 +25,12 @@
 </main>
 
 @code {
-    ShopContext Context { get; set; }
+
     Product[] Products { get; set; }
     protected override async Task OnInitializedAsync()
     {
-        Context = DbFactory.CreateDbContext();
-        Products = Context.Products.ToArray();
+        var context = DbFactory.CreateDbContext();
+        Products = context.Products.ToArray();
     }
 
     private string ProductToHref(Product product)
