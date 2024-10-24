@@ -8,7 +8,7 @@ namespace PetShop;
 public class ShopContext: DbContext
 {
     public string DbPath { get; }
-    public DbSet<Category> Categories { get; set; }
+    public DbSet<ProductCategory> ProductCategories { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<CartProduct> CartProducts { get; set; }
 
@@ -27,23 +27,30 @@ public class ShopContext: DbContext
             .UseLazyLoadingProxies()
             .UseSeeding((context, _) =>
             {
-                var categories = context.Set<Category>().ToArray();
+                var categories = context.Set<ProductCategory>().ToArray();
                 if (!categories.Any())
                 {
                     categories =
                     [
-                        new Category
+                        new ProductCategory
                         {
                             Name = "Accessories",
+                            Description = "Focus on Your Summer Pet’s Accessories"
                         },
-                        new Category
+                        new ProductCategory
                         {
                             Name = "Foods",
+                            Description = "Nourish Your Pet with the Best"
+                        },
+                        new ProductCategory
+                        {
+                            Name = "Other",
+                            Description = "Your Other Necessities"
                         }
                     ];
                     foreach (var category in categories)
                     {
-                        context.Set<Category>().Add(category);
+                        context.Set<ProductCategory>().Add(category);
                     }
                 }
                 if (!context.Set<Product>().Any())
@@ -95,7 +102,7 @@ public class ShopContext: DbContext
                                         Description = product.FullDescription,
                                         Name = product.Name,
                                         Price = (int)(product.Price * 100),
-                                        Category = category
+                                        ProductCategory = category
                                     });
                                     context.SaveChanges();
                                     tasks.Add(Task.Run(async () =>
@@ -127,10 +134,11 @@ public class CartProduct
     public int Quantity { get; set; }
 }
 
-public class Category
+public class ProductCategory
 {
     public int Id { get; set; }
     public string Name { get; set; }
+    public string Description { get; set; }
 }
 
 public class Product
@@ -139,5 +147,5 @@ public class Product
     public string Name { get; set; }
     public int Price { get; set; }
     public string Description { get; set; }
-    public virtual Category Category { get; set; }
+    public virtual ProductCategory ProductCategory { get; set; }
 }
