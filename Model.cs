@@ -11,6 +11,8 @@ public class ShopContext: DbContext
     public DbSet<ProductCategory> ProductCategories { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<CartProduct> CartProducts { get; set; }
+    
+    public DbSet<Booking> Bookings { get; set; }
 
     public ShopContext()
     {
@@ -124,6 +126,14 @@ public class ShopContext: DbContext
             });
 }
 
+public enum PetType 
+{
+    Cat,
+    Dog,
+    Bird,
+    Reptile
+}
+
 [Index(nameof(ProductId), IsUnique = true)]
 public class CartProduct
 {
@@ -148,4 +158,25 @@ public class Product
     public int Price { get; set; }
     public string Description { get; set; }
     public virtual ProductCategory ProductCategory { get; set; }
+}
+
+public enum BookingType
+{
+    VetAndCheckup,
+    PetGrooming,
+    PetSitting,
+}
+
+public class Booking
+{
+    public int Id { get; set; }
+    public BookingType BookingType { get; set; }
+    public string OwnerName { get; set; }
+    public string OwnerPhoneNumber { get; set; }
+    public string OwnerEmail { get; set; }
+    public string OwnerAddress { get; set; }
+    public PetType PetType { get; set; }
+    public string PetName { get; set; }
+    public string PetAllergies { get; set; }
+    public DateTime Date { get; set; }
 }

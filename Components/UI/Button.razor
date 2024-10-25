@@ -1,11 +1,23 @@
-﻿<button @attributes=AdditionalAttributes class="inline-flex items-center justify-center h-10 px-4 py-2 rounded-md @(AdditionalAttributes?.ContainsKey("class") ?? false ? AdditionalAttributes["class"] : "")">
-    @ChildContent
-</button>
+﻿<AsParent @attributes="AdditionalAttributes" class=@("inline-flex items-center justify-center h-10 px-4 py-2 rounded-md "  + (AdditionalAttributes?.TryGetValue("class", out var attribute) ?? false ? attribute : ""))>
+    @if (AsChild == null)
+    {
+        <button @attributes="context">
+            @ChildContent
+        </button>
+    }
+    else
+    {
+        @AsChild(context)
+    }
+</AsParent>
 
 @code {
     [Parameter]
-    public RenderFragment? ChildContent { get; set; }
+    public RenderFragment ChildContent { get; set; } = default!;
 
     [Parameter(CaptureUnmatchedValues = true)]
     public IDictionary<string, object>? AdditionalAttributes { get; set; }
+    
+    [Parameter]
+    public RenderFragment<IDictionary<string, object>?>? AsChild { get; set; }
 }

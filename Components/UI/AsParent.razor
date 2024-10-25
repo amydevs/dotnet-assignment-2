@@ -1,0 +1,10 @@
+@inherits ComponentBase
+
+@ChildContent(AdditionalAttributes)
+
+@code {
+    [Parameter] public RenderFragment<IDictionary<string, object>?> ChildContent { get; set; } = default!;
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IDictionary<string, object>? AdditionalAttributes { get; set; }
+}

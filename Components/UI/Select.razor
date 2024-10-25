@@ -1,0 +1,23 @@
+<AsParent @attributes="AdditionalAttributes" class=@("flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 " + (AdditionalAttributes?.TryGetValue("class", out var attribute) ?? false ? attribute : ""))>
+    @if (AsChild == null)
+    {
+        <select @attributes="context">
+            @ChildContent
+        </select>
+    }
+    else
+    {
+        @AsChild(context)
+    }
+</AsParent>
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default!; 
+    
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [Parameter]
+    public RenderFragment<IDictionary<string, object>?>? AsChild { get; set; }
+}
