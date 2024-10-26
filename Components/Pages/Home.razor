@@ -16,85 +16,95 @@
         </div>
         <div class="flex gap-5">
             <Button class="bg-primary text-primary-foreground">
-                Shop
+                <AsChild Context="buttonAttributes">
+                    <NavLink @attributes="buttonAttributes" href="/shop/browse">
+                        Shop
+                    </NavLink>
+                </AsChild>
             </Button>
             <Button class="border border-input bg-background">
-                Pet Services
+                <AsChild Context="buttonAttributes">
+                    <NavLink @attributes="buttonAttributes" href="/bookings/book">
+                        Pet Services
+                    </NavLink>
+                </AsChild>
             </Button>
         </div>
-        <div class="flex-1" />
+        <div class="flex-1"></div>
         <div class="relative -mt-32 md:-mt-64 max-w-4xl -z-10">
-            <div class="absolute inset-0 bg-gradient-to-t from-white to-20% to-white/0"/>
-            <img class="" src="home/hero.png"/>
+            <div class="absolute inset-0 bg-gradient-to-t from-white to-20% to-white/0"></div>
+            <img class="" src="home/hero.png" alt="Hero"/>
         </div>
-        <div class="flex-1" />
+        <div class="flex-1"></div>
     </section>
-    <section class="auto-limit-w space-y-16 px-4">
+    <section class="auto-limit-w space-y-8 px-4">
         <div class="space-y-3">
             <h3 class="font-semibold text-primary text-xl md:text-5xl">Comprehensive Services For Your Beloved Pets</h3>
             <p>We provide everything your pet needs – from pampering grooming sessions to regular health checkups and loving pet sitting services. Trust us to treat them like family!</p>
         </div>
-        <Card>
-            <CardHeader class="text-primary text-4xl">
-                Vet Check-up and Care
-            </CardHeader>
-            <CardContent>
-                <p>
-                    Prioritize your pet’s health with our comprehensive vet checkups. Our skilled veterinarians provide preventive care, diagnostics, and treatment to keep them in peak condition.
-                </p>
-            </CardContent>
-            <CardFooter>
-                <Button class="bg-primary text-primary-foreground">
-                    See More
-                </Button>
-            </CardFooter>
-        </Card>
-        <Card>
-            <CardHeader class="text-primary text-4xl">
-                Pet Grooming
-            </CardHeader>
-            <CardContent>
-                <p>
-                    Prioritize your pet’s health with our comprehensive vet checkups. Our skilled veterinarians provide preventive care, diagnostics, and treatment to keep them in peak condition.
-                </p>
-            </CardContent>
-            <CardFooter>
-                <Button class="bg-primary text-primary-foreground">
-                    See More
-                </Button>
-            </CardFooter>
-        </Card>
-        <Card>
-            <CardHeader class="text-primary text-4xl">
-                Pet Sitting
-            </CardHeader>
-            <CardContent>
-                <p>
-                    Rest easy knowing your pet is in good hands. Our pet sitting service provides attentive care, playtime, and companionship to keep your furry friend happy while
-                    you're away.
-                </p>
-            </CardContent>
-            <CardFooter>
-                <Button class="bg-primary text-primary-foreground">
-                    See More
-                </Button>
-            </CardFooter>
-        </Card>
-        <Card>
-            <CardHeader class="text-primary text-4xl">
-                Pet Shop
-            </CardHeader>
-            <CardContent>
-                <p>
-                    Find everything your pet needs in our fully stocked pet shop. From food and toys to accessories and supplies, we offer a range of quality products for pets of all types.
-                </p>
-            </CardContent>
-            <CardFooter>
-                <Button class="bg-primary text-primary-foreground">
-                    See More
-                </Button>
-            </CardFooter>
-        </Card>
+        <div class="space-y-3">
+            <Card>
+                <CardHeader class="text-primary text-4xl">
+                    Vet Check-up and Care
+                </CardHeader>
+                <CardContent>
+                    <p>
+                        Prioritize your pet’s health with our comprehensive vet checkups. Our skilled veterinarians provide preventive care, diagnostics, and treatment to keep them in peak condition.
+                    </p>
+                </CardContent>
+                <CardFooter>
+                    <Button class="bg-primary text-primary-foreground">
+                        See More
+                    </Button>
+                </CardFooter>
+            </Card>
+            <Card>
+                <CardHeader class="text-primary text-4xl">
+                    Pet Grooming
+                </CardHeader>
+                <CardContent>
+                    <p>
+                        Prioritize your pet’s health with our comprehensive vet checkups. Our skilled veterinarians provide preventive care, diagnostics, and treatment to keep them in peak condition.
+                    </p>
+                </CardContent>
+                <CardFooter>
+                    <Button class="bg-primary text-primary-foreground">
+                        See More
+                    </Button>
+                </CardFooter>
+            </Card>
+            <Card>
+                <CardHeader class="text-primary text-4xl">
+                    Pet Sitting
+                </CardHeader>
+                <CardContent>
+                    <p>
+                        Rest easy knowing your pet is in good hands. Our pet sitting service provides attentive care, playtime, and companionship to keep your furry friend happy while
+                        you're away.
+                    </p>
+                </CardContent>
+                <CardFooter>
+                    <Button class="bg-primary text-primary-foreground">
+                        See More
+                    </Button>
+                </CardFooter>
+            </Card>
+            <Card>
+                <CardHeader class="text-primary text-4xl">
+                    Pet Shop
+                </CardHeader>
+                <CardContent>
+                    <p>
+                        Find everything your pet needs in our fully stocked pet shop. From food and toys to accessories and supplies, we offer a range of quality products for pets of all types.
+                    </p>
+                </CardContent>
+                <CardFooter>
+                    <Button class="bg-primary text-primary-foreground">
+                        See More
+                    </Button>
+                </CardFooter>
+            </Card>
+        </div>
     </section>
 </main>
 

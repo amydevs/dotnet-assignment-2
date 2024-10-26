@@ -9,7 +9,7 @@
 <PageTitle>Booking</PageTitle>
 
 <main class="space-y-3">
-    <section class="auto-limit-w flex flex-col p-4">
+    <section class="auto-limit-w flex flex-col p-4 gap-6">
         <div class="space-y-3">
             <h2 class="font-semibold text-2xl md:text-6xl text-center text-primary">Your Booking has Been Successfully Confirmed!</h2>
             <h3 class="text-lg md:text-2xl text-center">Booking details will be sent to owner’s credentials provided</h3>
@@ -115,9 +115,27 @@
                 @Model.BookingDate.ToShortDateString()
             </span>
         </div>
-        <div>
-            <Button class="bg-primary border-primary-bo">
-                Edit
+        <div class="flex gap-3 justify-center">
+            <Button class="bg-primary text-primary-foreground">
+                <AsChild Context="buttonAttributes">
+                    <NavLink @attributes="buttonAttributes" href="/user/bookings">
+                        Continue
+                    </NavLink>
+                </AsChild>
+            </Button>
+            <Button class="bg-background border border-border">
+                <AsChild Context="buttonAttributes">
+                    <NavLink @attributes="buttonAttributes" href=@($"/bookings/book/{Model.Id}")>
+                        Update
+                    </NavLink>
+                </AsChild>
+            </Button>
+            <Button class="bg-destructive text-destructive-foreground">
+                <AsChild Context="buttonAttributes">
+                    <NavLink @attributes="buttonAttributes" @onclick="CancelBooking">
+                        Cancel Booking
+                    </NavLink>
+                </AsChild>
             </Button>
         </div>
     </section>
@@ -131,5 +149,13 @@
     {
         var context = await DbFactory.CreateDbContextAsync();
         Model = (await context.Bookings.FindAsync(int.Parse(Slug)))!;
+    }
+
+    private async Task CancelBooking()
+    {
+        var context = await DbFactory.CreateDbContextAsync();
+        context.Bookings.Remove(Model);
+        await context.SaveChangesAsync();
+        Navigation.NavigateTo("/user/bookings");
     }
 }
