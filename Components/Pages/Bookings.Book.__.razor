@@ -1,0 +1,155 @@
+﻿@page "/bookings/book/{*Slug}"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using PetShop.Components.UI
+@namespace PetShop.Components.Pages
+@inject IDbContextFactory<ShopContext> DbFactory
+@inject NavigationManager Navigation
+
+<PageTitle>Services</PageTitle>
+
+<main class="space-y-3">
+    <section class="auto-limit-w flex flex-col p-4 gap-8">
+        <h2 class="font-semibold text-2xl md:text-6xl">
+            <span class="text-primary">Book Your Pet’s Appointment</span>
+        </h2>
+        <EditForm class="flex flex-col gap-3" Model="Model" OnInvalidSubmit=@(() => { Navigation.NavigateTo($"{Navigation.Uri.Split("#")[0]}#validationSummary", false, true);}) OnValidSubmit="Submit"  FormName="BookingForm">
+            <DataAnnotationsValidator />
+            <label for="bookingType">
+                Booking Type*
+            </label>
+            <Select>
+                <AsChild Context="selectAttributes">
+                    <InputSelect id="bookingType" @attributes="selectAttributes" @bind-Value="Model.BookingType">
+                        <option value="@BookingType.VetAndCheckup">Vet And Checkup</option>
+                        <option value="@BookingType.PetGrooming">Pet Grooming</option>
+                        <option value="@BookingType.PetSitting">Pet Sitting</option>
+                    </InputSelect>
+                </AsChild>
+            </Select>
+
+            <label for="petType">
+                Pet Type*
+            </label>
+            <Select>
+                <AsChild Context="selectAttributes">
+                    <InputSelect id="petType" @attributes="selectAttributes" @bind-Value="Model.PetType">
+                        <option value="@PetType.Cat">Cat</option>
+                        <option value="@PetType.Dog">Dog</option>
+                        <option value="@PetType.Bird">Bird</option>
+                        <option value="@PetType.Reptile">Reptile</option>
+                    </InputSelect>
+                </AsChild>
+            </Select>
+
+
+
+            <label for="ownerName">
+                Owner Name*
+            </label>
+            <Input>
+                <AsChild Context="inputAttributes">
+                    <InputText id="ownerName" @attributes="inputAttributes" @bind-Value="Model.OwnerName" placeholder="Jane Doe"></InputText>
+                </AsChild>
+            </Input>
+
+            <label for="ownerPhoneNumber">
+                Owner Phone Number*
+            </label>
+            <Input>
+                <AsChild Context="inputAttributes">
+                    <InputText id="ownerPhoneNumber" @attributes="inputAttributes" @bind-Value="Model.OwnerPhoneNumber" placeholder="0400 000 000"></InputText>
+                </AsChild>
+            </Input>
+
+            <label for="ownerEmail">
+                Owner Email*
+            </label>
+            <Input>
+                <AsChild Context="inputAttributes">
+                    <InputText id="ownerEmail" @attributes="inputAttributes" @bind-Value="Model.OwnerEmail" placeholder="jane.doe@gmail.com"></InputText>
+                </AsChild>
+            </Input>
+
+            <label for="ownerAddress">
+                Owner Address*
+            </label>
+            <Input>
+                <AsChild Context="inputAttributes">
+                    <InputText id="ownerAddress" @attributes="inputAttributes" @bind-Value="Model.OwnerAddress" placeholder="1 Quarkson Drive, Sydenham, NSW 2044"></InputText>
+                </AsChild>
+            </Input>
+
+            <label for="petName">
+                Pet Name*
+            </label>
+            <Input>
+                <AsChild Context="inputAttributes">
+                    <InputText id="petName" @attributes="inputAttributes" @bind-Value="Model.PetName" placeholder="Skippy"></InputText>
+                </AsChild>
+            </Input>
+
+            <label for="petAllergies">
+                Pet Allergies
+            </label>
+            <Input>
+                <AsChild Context="inputAttributes">
+                    <InputText id="petAllergies" @attributes="inputAttributes"  @bind-Value="Model.PetAllergies" placeholder="Dust, Grass, etc."></InputText>
+                </AsChild>
+            </Input>
+
+            <label for="bookingDate">
+                Booking Date*
+            </label>
+            <Input>
+                <AsChild Context="inputAttributes">
+                    <InputDate id="bookingDate" @attributes="inputAttributes" @bind-Value="Model.BookingDate"></InputDate>
+                </AsChild>
+            </Input>
+
+            <Button class="bg-primary text-primary-foreground" type="submit">
+                Submit
+            </Button>
+            <div id="validationSummary">
+                <ValidationSummary class="text-destructive" />
+            </div>
+        </EditForm>
+    </section>
+</main>
+
+@code {
+    [Parameter]
+    public string? Slug { get; set; }
+    [SupplyParameterFromForm] private Booking Model { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Slug != null)
+        {
+            var context = await DbFactory.CreateDbContextAsync();
+            Model = (await context.Bookings.FindAsync(int.Parse(Slug)))!;
+            return;
+        }
+        Model = new Booking
+        {
+            BookingDate = DateTime.Now
+        };
+    }
+
+    private async Task Submit()
+    {
+        var context = await DbFactory.CreateDbContextAsync();
+        var dbModel =  await context.Bookings.FindAsync(Model.Id);
+        context.ChangeTracker.Clear();
+        if (dbModel != null)
+        {
+            context.Bookings.Update(Model);
+        }
+        else
+        {
+            Model = (await context.Bookings.AddAsync(Model)).Entity;
+        }
+        await context.SaveChangesAsync();
+        Navigation.NavigateTo($"/bookings/booking/{Model.Id}");
+    }
+}

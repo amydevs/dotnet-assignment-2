@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Net;
 using Microsoft.EntityFrameworkCore;
@@ -170,13 +171,22 @@ public enum BookingType
 public class Booking
 {
     public int Id { get; set; }
+    [Display(Name = "Booking Type"), Required]
     public BookingType BookingType { get; set; }
+    [Display(Name = "Owner Name"), Required]
     public string OwnerName { get; set; }
+    [Display(Name = "Owner Phone Number"), Required, RegularExpression("^[0-9]{8,10}$", ErrorMessage = "Phone number must be 8 to 10 digits")]
     public string OwnerPhoneNumber { get; set; }
+    [Display(Name = "Owner Email"), Required, EmailAddress]
     public string OwnerEmail { get; set; }
+    [Display(Name = "Owner Address"), Required]
     public string OwnerAddress { get; set; }
+    [Display(Name = "Pet Type"), Required]
     public PetType PetType { get; set; }
+    [Display(Name = "Pet Name"), Required]
     public string PetName { get; set; }
+    [Display(Name = "Pet Allergies")]
     public string PetAllergies { get; set; }
-    public DateTime Date { get; set; }
+    [Display(Name = "Booking Date"), Required]
+    public DateTime BookingDate { get; set; }
 }

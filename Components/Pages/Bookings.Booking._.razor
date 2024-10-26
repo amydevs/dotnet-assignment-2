@@ -1,0 +1,135 @@
+﻿@page "/bookings/booking/{Slug}"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using PetShop.Components.UI
+@namespace PetShop.Components.Pages
+@inject IDbContextFactory<ShopContext> DbFactory
+@inject NavigationManager Navigation
+
+<PageTitle>Booking</PageTitle>
+
+<main class="space-y-3">
+    <section class="auto-limit-w flex flex-col p-4">
+        <div class="space-y-3">
+            <h2 class="font-semibold text-2xl md:text-6xl text-center text-primary">Your Booking has Been Successfully Confirmed!</h2>
+            <h3 class="text-lg md:text-2xl text-center">Booking details will be sent to owner’s credentials provided</h3>
+        </div>
+        <div class="flex gap-3 flex-col">
+            <span>
+                Booking Type
+            </span>
+            @switch (Model.BookingType)
+            {
+                case BookingType.VetAndCheckup:
+                {
+                    <span>Vet and Checkup</span>
+                    break;
+                }
+                case BookingType.PetGrooming:
+                {
+                    <span>Pet Grooming</span>
+                    break;
+                }
+                case BookingType.PetSitting:
+                {
+                    <span>Pet Sitting</span>
+                    break;
+                }
+            }
+            
+            <span>
+                Pet Type
+            </span>
+            @switch (Model.PetType)
+            {
+                case PetType.Cat:
+                {
+                    <span>Cat</span>
+                    break;
+                }
+                case PetType.Dog:
+                {
+                    <span>Dog</span>
+                    break;
+                }
+                case PetType.Bird:
+                {
+                    <span>Bird</span>
+                    break;
+                }
+                case PetType.Reptile:
+                {
+                    <span>Reptile</span>
+                    break;
+                }
+            }
+
+
+
+            <span>
+                Owner Name
+            </span>
+            <span>
+                @Model.OwnerName
+            </span>
+
+            <span>
+                Owner Phone Number
+            </span>
+            <span>
+                @Model.OwnerPhoneNumber
+            </span>
+
+            <span>
+                Owner Email
+            </span>
+            <span>
+                @Model.OwnerEmail
+            </span>
+
+            <span>
+                Owner Address
+            </span>
+            <span>
+                @Model.OwnerAddress
+            </span>
+
+            <span>
+                Pet Name
+            </span>
+            <span>
+                @Model.PetName
+            </span>
+
+            <span>
+                Pet Allergies
+            </span>
+            <span>
+                @(Model.PetAllergies.Length == 0 ? "None" : Model.PetAllergies)
+            </span>
+
+            <span>
+                Booking Date
+            </span>
+            <span>
+                @Model.BookingDate.ToShortDateString()
+            </span>
+        </div>
+        <div>
+            <Button class="bg-primary border-primary-bo">
+                Edit
+            </Button>
+        </div>
+    </section>
+</main>
+
+@code {
+    [Parameter] public string Slug { get; set; } = default!;
+    [SupplyParameterFromForm] private Booking Model { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var context = await DbFactory.CreateDbContextAsync();
+        Model = (await context.Bookings.FindAsync(int.Parse(Slug)))!;
+    }
+}

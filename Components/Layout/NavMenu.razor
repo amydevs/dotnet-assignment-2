@@ -130,7 +130,7 @@
         },
         new Route
         {
-            Href = "/services",
+            Href = "/bookings/book",
             Title = "Services",
         },
     ];
@@ -148,9 +148,6 @@
     protected override async Task OnInitializedAsync()
     {
         Context = await DbFactory.CreateDbContextAsync();
-        Context.ChangeTracker.AutoDetectChangesEnabled = true;
-        Context.ChangeTracker.DetectChanges();
-        Console.WriteLine(Context.ChangeTracker.DebugView.LongView);
     }
 
     private async Task SetCartProductQuantity(CartProduct cartProduct, int quantity)
