@@ -13,6 +13,9 @@ public class ShopContext: DbContext
     public DbSet<Product> Products { get; set; }
     public DbSet<CartProduct> CartProducts { get; set; }
     
+    public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderProduct> OrderProducts { get; set; }
+    
     public DbSet<Booking> Bookings { get; set; }
 
     public ShopContext()
@@ -160,6 +163,34 @@ public class Product
     public int Price { get; set; }
     public string Description { get; set; }
     public virtual ProductCategory ProductCategory { get; set; }
+}
+
+public class Order
+{
+    public int Id { get; set; }
+    [Display(Name = "Full Name"), Required]
+    public string Name { get; set; }
+    [Display(Name = "Address"), Required]
+    public string Address { get; set; }
+    [Display(Name = "Phone Number"), Required, RegularExpression("^[0-9]{8,10}$", ErrorMessage = "Phone number must be 8 to 10 digits")]
+    public string PhoneNumber { get; set; }
+    [Display(Name = "Email"), Required, EmailAddress]
+    public string Email { get; set; }
+    public int Total { get; set; }
+}
+
+[Index(nameof(ProductId), nameof(OrderId), IsUnique = true)]
+public class OrderProduct
+{
+    public int Id { get; set; }
+    public int ProductId { get; set; }
+    [ForeignKey(nameof(ProductId))]
+    public virtual Product Product { get; set; }
+    public int OrderId { get; set; }
+    [ForeignKey(nameof(OrderId))]
+    public virtual Order Order { get; set; }
+    public int Quantity { get; set; }
+    public int GrossTotal { get; set; }
 }
 
 public enum BookingType

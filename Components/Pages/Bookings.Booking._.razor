@@ -2,7 +2,6 @@
 @rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using PetShop.Components.UI
-@namespace PetShop.Components.Pages
 @inject IDbContextFactory<ShopContext> DbFactory
 @inject NavigationManager Navigation
 
@@ -143,7 +142,7 @@
 
 @code {
     [Parameter] public string Slug { get; set; } = default!;
-    [SupplyParameterFromForm] private Booking Model { get; set; } = default!;
+    private Booking Model { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {

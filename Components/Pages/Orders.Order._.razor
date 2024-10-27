@@ -1,0 +1,92 @@
+@page "/orders/order/{Slug}"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using PetShop.Components.UI
+@inject IDbContextFactory<ShopContext> DbFactory
+@inject NavigationManager Navigation
+
+<PageTitle>Booking</PageTitle>
+
+<main>
+    <section class="auto-limit-w flex flex-col p-4 gap-6">
+        <div class="space-y-3">
+            <h2 class="font-semibold text-2xl md:text-6xl text-center text-primary">Your Order has Been Successfully Placed!</h2>
+            <h3 class="text-lg md:text-2xl text-center">Order details will be sent to owner’s credentials provided</h3>
+        </div>
+        <div class="flex flex-col gap-5">
+            @foreach (OrderProduct orderProduct in OrderProducts)
+            {
+                <div class="flex h-32 gap-5 w-full">
+                    <img src="images/products/@(orderProduct.ProductId).png" />
+                    <div class="flex flex-col justify-center gap-3 w-full">
+                        <span>
+                            @orderProduct.Product.Name
+                        </span>
+                        <span>
+                            Qty: @orderProduct.Quantity
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-3 justify-between">
+                        $@(orderProduct.GrossTotal / 100.0)
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="flex justify-between">
+            <span class="text-lg font-semibold">Total</span>
+            <span>$@(Model.Total / 100.0)</span>
+        </div>
+        <div class="h-[1px] bg-border"></div>
+        <div class="flex gap-3 flex-col">
+            <span>
+                Full Name
+            </span>
+            <span>
+                @Model.Name
+            </span>
+
+            <span>
+                Phone Number
+            </span>
+            <span>
+                @Model.PhoneNumber
+            </span>
+
+            <span>
+                Email
+            </span>
+            <span>
+                @Model.Email
+            </span>
+
+            <span>
+                Address
+            </span>
+            <span>
+                @Model.Address
+            </span>
+        </div>
+        <div class="flex gap-3 justify-center">
+            <Button class="bg-primary text-primary-foreground">
+                <AsChild Context="buttonAttributes">
+                    <NavLink @attributes="buttonAttributes" href="/user/orders">
+                        Continue
+                    </NavLink>
+                </AsChild>
+            </Button>
+        </div>
+    </section>
+</main>
+
+@code {
+    [Parameter] public string Slug { get; set; } = default!;
+    private Order Model { get; set; } = default!;
+    public OrderProduct[] OrderProducts { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var context = await DbFactory.CreateDbContextAsync();
+        Model = (await context.Orders.FindAsync(int.Parse(Slug)))!;
+        OrderProducts = await context.OrderProducts.Where((e) => e.OrderId == Model.Id).ToArrayAsync();
+    }
+}

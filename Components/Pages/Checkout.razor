@@ -1,0 +1,117 @@
+@page "/checkout"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using PetShop.Components.UI
+@inject IDbContextFactory<ShopContext> DbFactory
+@inject NavigationManager Navigation
+
+<PageTitle>Checkout</PageTitle>
+
+<main>
+    <section class="auto-limit-w flex flex-col p-4 gap-8">
+        <h2 class="font-semibold text-2xl md:text-6xl">
+            <span class="text-primary">Checkout</span>
+        </h2>
+        <EditForm class="flex flex-col gap-3" Model="Model" OnInvalidSubmit=@(() => { Navigation.NavigateTo($"{Navigation.Uri.Split("#")[0]}#validationSummary", false, true);}) OnValidSubmit="Submit"  FormName="CheckoutForm">
+            <DataAnnotationsValidator />
+            <div class="grid-cols-2 grid">
+                <span class="text-muted-foreground">Shipping</span>
+                <span class="text-muted-foreground text-right">@(Shipping == 0 ? "-" : "$" + (Shipping / 100.0))</span>
+
+                <span class="text-muted-foreground">Duties and Taxes</span>
+                <span class="text-muted-foreground text-right">FREE</span>
+
+                <span class="text-lg font-semibold">Total (@Context.CartProducts.Count())</span>
+                <span class="text-lg font-semibold text-right">$@(Total / 100.0)</span>
+            </div>
+            <div class="bg-border h-[1px]"></div>
+            <label for="fullName">
+                Full Name*
+            </label>
+            <Input>
+                <AsChild Context="inputAttributes">
+                    <InputText id="fullName" @attributes="inputAttributes" @bind-Value="Model.Name" placeholder="Jane Doe"></InputText>
+                </AsChild>
+            </Input>
+
+            <label for="phoneNumber">
+                Phone Number*
+            </label>
+            <Input>
+            <AsChild Context="inputAttributes">
+                <InputText id="phoneNumber" @attributes="inputAttributes" @bind-Value="Model.PhoneNumber" placeholder="0400000000"></InputText>
+            </AsChild>
+            </Input>
+
+            <label for="email">
+                Email*
+            </label>
+            <Input>
+            <AsChild Context="inputAttributes">
+                <InputText id="email" @attributes="inputAttributes" @bind-Value="Model.Email" placeholder="jane.doe@gmail.com"></InputText>
+            </AsChild>
+            </Input>
+
+            <label for="address">
+                Address*
+            </label>
+            <Input>
+            <AsChild Context="inputAttributes">
+                <InputText id="address" @attributes="inputAttributes" @bind-Value="Model.Address" placeholder="1 Quarkson Drive, Sydenham, NSW 2044"></InputText>
+            </AsChild>
+            </Input>
+
+            <Button class="bg-primary text-primary-foreground" type="submit">
+                Place
+            </Button>
+            <div id="validationSummary">
+                <ValidationSummary class="text-destructive" />
+            </div>
+        </EditForm>
+    </section>
+</main>
+
+@code {
+    [SupplyParameterFromForm] private Order Model { get; set; } = default!;
+    private ShopContext Context { get; set; } = default!;
+    
+    private int Total
+    {
+        get
+        {
+            return Context.CartProducts.ToList().Aggregate(0, (acc, e) => acc + e.Product.Price * e.Quantity) + Shipping;
+        }
+    }
+    
+    private int Shipping => (Model.Address ?? "").Length != 0 ? 2000 : 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Context = await DbFactory.CreateDbContextAsync();
+        Model = new Order { };
+    }
+
+    private async Task Submit()
+    {
+        if (!Context.CartProducts.Any())
+        {
+            return;
+        }
+
+        Model.Total = Total;
+        var dbModel = Context.Orders.Add(Model);
+        foreach (var cartProduct in Context.CartProducts)
+        {
+            Context.OrderProducts.Add(new OrderProduct
+            {
+                Order = dbModel.Entity,
+                Product = cartProduct.Product,
+                Quantity = cartProduct.Quantity,
+                GrossTotal = cartProduct.Product.Price * cartProduct.Quantity,
+            });
+        }
+        Context.CartProducts.RemoveRange(Context.CartProducts);
+        await Context.SaveChangesAsync();
+        Navigation.NavigateTo($"/orders/order/{dbModel.Entity.Id}");
+    }
+}

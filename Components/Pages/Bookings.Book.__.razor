@@ -2,7 +2,6 @@
 @rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using PetShop.Components.UI
-@namespace PetShop.Components.Pages
 @inject IDbContextFactory<ShopContext> DbFactory
 @inject NavigationManager Navigation
 
@@ -41,9 +40,7 @@
                     </InputSelect>
                 </AsChild>
             </Select>
-
-
-
+            
             <label for="ownerName">
                 Owner Name*
             </label>
@@ -108,7 +105,7 @@
             </Input>
 
             <Button class="bg-primary text-primary-foreground" type="submit">
-                Submit
+                Book
             </Button>
             <div id="validationSummary">
                 <ValidationSummary class="text-destructive" />
