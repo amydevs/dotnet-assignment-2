@@ -15,5 +15,7 @@ bundleexclude.lst
 
 .git/
 .git/**
+.github/
+.github/**
 .idea/
 .idea/**
