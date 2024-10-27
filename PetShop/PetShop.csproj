@@ -19,5 +19,19 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0-rc.2.24474.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="PetShop.Tests\obj\PetShop.Tests.csproj.nuget.dgspec.json" />
+    <_ContentIncludedByDefault Remove="PetShop.Tests\obj\project.assets.json" />
+    <_ContentIncludedByDefault Remove="PetShop.Tests\obj\project.packagespec.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="PetShop\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="PetShop\Properties\launchSettings.json" />
+  </ItemGroup>
   
 </Project>
