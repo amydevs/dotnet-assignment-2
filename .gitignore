@@ -262,6 +262,7 @@ __pycache__/
 
 # Database Stuff
 shop.db*
+!shop.db.bak
 wwwroot/images/products
 wwwroot/app.css
 bundle.zip

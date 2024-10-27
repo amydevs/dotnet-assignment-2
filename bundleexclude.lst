@@ -4,6 +4,7 @@ package-lock.json
 bundle.sh
 bundleexclude.lst
 tailwind.config.js
+shop.db.bak
 
 node_modules/
 node_modules/**

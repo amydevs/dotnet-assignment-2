@@ -1,5 +1,5 @@
-rm -rf shop.db
-dotnet-ef database update
+rm -f shop.db
+cp shop.db.bak shop.db
 npm run mix
-rm -rf ./bundle.zip
+rm -f ./bundle.zip
 zip -r ./bundle.zip ./ -x@bundleexclude.lst
