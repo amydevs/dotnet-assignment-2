@@ -59,6 +59,16 @@
     {
         var context = await DbFactory.CreateDbContextAsync();
         ProductCategories = await context.ProductCategories.ToArrayAsync();
-        Products = Slug == null ? await context.Products.ToArrayAsync() : await context.Products.Where((e) => e.ProductCategory.Id == int.Parse(Slug)).ToArrayAsync();
+        if (Slug == null)
+        {
+            Products = await context.Products.ToArrayAsync();
+        }
+        else
+        {
+            Products =
+                await (from product in context.Products
+                    where product.ProductCategory.Id == int.Parse(Slug)
+                    select product).ToArrayAsync();
+        }
     }
 }

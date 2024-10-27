@@ -87,6 +87,10 @@
     {
         var context = await DbFactory.CreateDbContextAsync();
         Model = (await context.Orders.FindAsync(int.Parse(Slug)))!;
-        OrderProducts = await context.OrderProducts.Where((e) => e.OrderId == Model.Id).ToArrayAsync();
+        OrderProducts = await (
+            from product in context.OrderProducts
+            where product.ProductId == Model.Id
+            select product
+        ).ToArrayAsync();
     }
 }

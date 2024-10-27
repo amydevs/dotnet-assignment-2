@@ -76,7 +76,11 @@
         ProductsMap = new Dictionary<ProductCategory, Product[]>();
         foreach (var category in  ProductCategories)
         {
-            ProductsMap.Add(category, await context.Products.Where((e) => e.ProductCategory.Id == category.Id).Take(4).ToArrayAsync());
+            var products =
+                from product in context.Products
+                where product.ProductCategory.Id == category.Id
+                select product;
+            ProductsMap.Add(category, await products.Take(4).ToArrayAsync());
         }
     }
 }
