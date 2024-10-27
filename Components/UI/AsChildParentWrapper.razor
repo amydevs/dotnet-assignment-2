@@ -3,7 +3,11 @@
     @ChildContent(AdditionalAttributes)
 }
 
+
 @code {
+    // This component is used for supporting the AsChild pattern inspired by https://www.radix-ui.com/primitives/docs/guides/composition
+    // It simply captures all the attributes that the parent has passed it, and re-emits in through the ChildContent `context` parameter.
+    
     [Parameter] public RenderFragment<IDictionary<string, object>?>? ChildContent { get; set; }
 
     [Parameter(CaptureUnmatchedValues = true)]
