@@ -134,6 +134,7 @@
 
     private async Task Submit()
     {
+        // PetAllergies could be null if the string is empty, do not listen to the warning!
         if (Model.PetAllergies == null)
         {
             Model.PetAllergies = "";

@@ -95,6 +95,7 @@
 
     private async Task Submit()
     {
+        // Don't do anything if you don't have any CartProducts
         if (!Context.CartProducts.Any())
         {
             return;
@@ -102,6 +103,7 @@
 
         Model.Total = Total;
         var dbModel = Context.Orders.Add(Model);
+        // Transfer CartProducts to OrderProducts, emptying the CartProducts in the process
         foreach (var cartProduct in Context.CartProducts)
         {
             Context.OrderProducts.Add(new OrderProduct

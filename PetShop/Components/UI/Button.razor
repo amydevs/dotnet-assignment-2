@@ -1,4 +1,4 @@
-﻿@implements PetShop.Lib.IAsChildParent
+﻿@implements PetShop.Lib.IAsChildParent<IDictionary<string, object>>
 
 <AsChildParentWrapper @attributes="AdditionalAttributes" class=@("inline-flex items-center justify-center h-10 px-4 py-2 rounded-md "  + (AdditionalAttributes?.TryGetValue("class", out var attribute) ?? false ? attribute : ""))>
     @if (AsChild == null)

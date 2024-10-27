@@ -4,9 +4,10 @@ namespace PetShop.Lib;
 
 /**
  * Interface used to strongly type a Parent component that supports the AsChild pattern inspired by https://www.radix-ui.com/primitives/docs/guides/composition
+ * Generic is used to define the type of the attributes provided.
  */
-public interface IAsChildParent
+public interface IAsChildParent<TAttributes>
 {
-    public IDictionary<string, object>? AdditionalAttributes { get; set; }
-    public RenderFragment<IDictionary<string, object>?>? AsChild { get; set; }
+    public TAttributes? AdditionalAttributes { get; set; }
+    public RenderFragment<TAttributes?>? AsChild { get; set; }
 }

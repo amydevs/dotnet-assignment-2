@@ -60,6 +60,7 @@
     private async Task AddToCart()
     {
         var context = await DbFactory.CreateDbContextAsync();
+        // Try to find the CartProduct, if not then create a new entry instead. This is an upsert.
         try
         {
             var cartProduct = context.CartProducts.First(e => e.ProductId == Product.Id);

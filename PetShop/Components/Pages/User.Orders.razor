@@ -61,6 +61,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // Load orders
         var context = await DbFactory.CreateDbContextAsync();
         Orders = await context.Orders.ToArrayAsync();
     }

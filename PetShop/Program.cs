@@ -6,11 +6,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents()
-    .AddInteractiveWebAssemblyComponents();
+    .AddInteractiveServerComponents();
 
+// Add DB Service to the container.
 builder.Services.AddDbContextFactory<ShopContext>();
 
+// Add NavMenuStateService to the container for managing NavMenu re=renders.
 builder.Services.AddSingleton<INavMenuStateService, NavMenuStateService>();
 
 var app = builder.Build();
@@ -29,7 +30,6 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode()
-    .AddInteractiveWebAssemblyRenderMode();
+    .AddInteractiveServerRenderMode();
 
 app.Run();

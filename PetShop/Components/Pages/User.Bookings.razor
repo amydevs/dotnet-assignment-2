@@ -112,6 +112,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // Load bookings
         var context = await DbFactory.CreateDbContextAsync();
         Bookings = await context.Bookings.ToArrayAsync();
     }
