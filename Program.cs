@@ -1,5 +1,6 @@
 using PetShop;
 using PetShop.Components;
+using PetShop.Lib.Services.NavMenuStateService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,6 +10,8 @@ builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddDbContextFactory<ShopContext>();
+
+builder.Services.AddSingleton<INavMenuStateService, NavMenuStateService>();
 
 var app = builder.Build();
 

@@ -1,35 +1,82 @@
 @page "/shop"
 @rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
+@using PetShop.Components.UI
 @using PetShop.Components.UI.Card
 @inject IDbContextFactory<ShopContext> DbFactory
 
+<PageTitle>Shop</PageTitle>
+
 <main>
-    <section class="auto-limit-w grid grid-cols-[repeat(auto-fill,20rem)] gap-3 justify-center">
-        @foreach (var product in Products)
-        {
-            <NavLink href=@($"/shop/product/{product.Id}")>
-                <Card class="h-full">
-                    <CardHeader />
-                    <CardContent>
-                        <img alt="Product Image" src="/images/products/@(product.Id).png"/>
-                    </CardContent>
-                    <CardHeader>
-                        <CardTitle>@product.Name</CardTitle>
-                        <CardDescription>$@(product.Price / 100.0)</CardDescription>
-                    </CardHeader>
-                </Card>
-            </NavLink>
-        }
+    <section class="auto-limit-w space-y-8">
+        <div class="flex gap-3 justify-center">
+            <Button class="border border-border active:bg-primary active:text-primary-foreground active:border-0">
+                <AsChild Context="buttonAttributes">
+                    <NavLink @attributes="buttonAttributes" href="/shop/browse" Match="NavLinkMatch.All">
+                        All
+                    </NavLink>
+                </AsChild>
+            </Button>
+            @foreach (var category in ProductCategories)
+            {
+                <Button class="border border-border active:bg-primary active:text-primary-foreground active:border-0">
+                    <AsChild Context="buttonAttributes">
+                        <NavLink @attributes="buttonAttributes" href=@($"/shop/browse/{category.Id}")>
+                            @category.Name
+                        </NavLink>
+                    </AsChild>
+                </Button>
+            }
+        </div>
+        <div class="flex flex-col gap-8 p-4">
+            @foreach (var category in ProductCategories)
+            {
+                <div class="flex flex-col gap-5">
+                    <h2 class="text-2xl md:text-4xl text-primary">@category.Description</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        @foreach (var product in ProductsMap[category])
+                        {
+                            <NavLink href=@($"/shop/product/{product.Id}")>
+                                <Card class="h-full">
+                                    <CardHeader/>
+                                    <CardContent>
+                                        <img alt="Product Image" src="/images/products/@(product.Id).png"/>
+                                    </CardContent>
+                                    <CardHeader>
+                                        <CardTitle class="text-ellipsis whitespace-nowrap overflow-hidden">@product.Name</CardTitle>
+                                        <CardDescription>$@(product.Price / 100.0)</CardDescription>
+                                    </CardHeader>
+                                </Card>
+                            </NavLink>
+                        }
+                    </div>
+                    <div class="flex justify-center">
+                        <Button class="bg-primary text-primary-foreground">
+                            <AsChild Context="buttonAttributes">
+                                <NavLink @attributes="buttonAttributes" href=@($"/shop/browse/{category.Id}")>
+                                    Show More
+                                </NavLink>
+                            </AsChild>
+                        </Button>
+                    </div>
+                </div>
+            }
+        </div>
     </section>
 </main>
 
 @code {
 
-    Product[] Products { get; set; }
+    ProductCategory[] ProductCategories { get; set; } = default!;
+    IDictionary<ProductCategory, Product[]> ProductsMap { get; set; } = default!;
     protected override async Task OnInitializedAsync()
     {
-        var context = DbFactory.CreateDbContext();
-        Products = context.Products.ToArray();
+        var context = await DbFactory.CreateDbContextAsync();
+        ProductCategories = await context.ProductCategories.ToArrayAsync();
+        ProductsMap = new Dictionary<ProductCategory, Product[]>();
+        foreach (var category in  ProductCategories)
+        {
+            ProductsMap.Add(category, await context.Products.Where((e) => e.ProductCategory.Id == category.Id).Take(4).ToArrayAsync());
+        }
     }
 }

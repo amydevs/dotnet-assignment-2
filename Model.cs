@@ -85,9 +85,10 @@ public class ShopContext: DbContext
                                 req.Headers.Add("Accept", "application/json");
                                 req.Headers.Add("Accept-Encoding", "gzip, deflate, br");
                                 req.Content =
-                                    JsonContent.Create(new Dictionary<string, string>{
+                                    JsonContent.Create(new Dictionary<string, object>{
                                         { "SearchTerm", $"pet {category.Name}" },
                                         { "SortType", "TraderRelevance" },
+                                        { "IsHideUnavailableProducts", true },
                                         { "PageSize", "10" },
                                     });
                                 var resp = await client.SendAsync(req).ConfigureAwait(true);

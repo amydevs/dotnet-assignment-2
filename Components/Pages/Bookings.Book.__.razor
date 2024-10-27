@@ -13,7 +13,7 @@
         <h2 class="font-semibold text-2xl md:text-6xl">
             <span class="text-primary">Book Your Pet’s Appointment</span>
         </h2>
-        <EditForm class="flex flex-col gap-3" Model="Model" OnInvalidSubmit=@(() => { Navigation.NavigateTo($"{Navigation.Uri.Split("#")[0]}#validationSummary", false, true);}) OnValidSubmit="Submit"  FormName="BookingForm">
+            <EditForm class="flex flex-col gap-3" Model="Model" OnInvalidSubmit=@(() => { Navigation.NavigateTo($"{Navigation.Uri.Split("#")[0]}#validationSummary", false, true);}) OnValidSubmit="Submit"  FormName="BookingForm">
             <DataAnnotationsValidator />
             <label for="bookingType">
                 Booking Type*
@@ -58,7 +58,7 @@
             </label>
             <Input>
                 <AsChild Context="inputAttributes">
-                    <InputText id="ownerPhoneNumber" @attributes="inputAttributes" @bind-Value="Model.OwnerPhoneNumber" placeholder="0400 000 000"></InputText>
+                    <InputText id="ownerPhoneNumber" @attributes="inputAttributes" @bind-Value="Model.OwnerPhoneNumber" placeholder="0400000000"></InputText>
                 </AsChild>
             </Input>
 

@@ -5,50 +5,60 @@
 @using PetShop.Components.UI.Card
 @inject IDbContextFactory<ShopContext> DbFactory
 
+<PageTitle>Shop</PageTitle>
+
 <main>
-    <section class="auto-limit-w flex gap-3">
-        <Button />
-    </section>
-    <section class="auto-limit-w grid grid-cols-[repeat(auto-fill,20rem)] gap-3 justify-center">
-        @foreach (var product in Products)
-        {
-            <NavLink href=@ProductToHref(product)>
-                <Card class="h-full">
-                    <CardHeader/>
-                    <CardContent>
-                        <img src="/images/products/@(product.Id).png"/>
-                    </CardContent>
-                    <CardHeader>
-                        <CardTitle>@product.Name</CardTitle>
-                        <CardDescription>$@(product.Price / 100.0)</CardDescription>
-                    </CardHeader>
-                </Card>
-            </NavLink>
-        }
+    <section class="auto-limit-w flex flex-col gap-3">
+        <div class="flex gap-3 justify-center">
+            <Button class="border border-border active:bg-primary active:text-primary-foreground active:border-0">
+                <AsChild Context="buttonAttributes">
+                    <NavLink @attributes="buttonAttributes" href="/shop/browse" Match="NavLinkMatch.All">
+                        All
+                    </NavLink>
+                </AsChild>
+            </Button>
+            @foreach (var category in ProductCategories)
+            {
+                <Button class="border border-border active:bg-primary active:text-primary-foreground active:border-0">
+                    <AsChild Context="buttonAttributes">
+                        <NavLink @attributes="buttonAttributes" href=@($"/shop/browse/{category.Id}")>
+                            @category.Name
+                        </NavLink>
+                    </AsChild>
+                </Button>
+            }
+        </div>
+        <div class="grid grid-cols-[repeat(auto-fill,20rem)] gap-3 justify-center">
+            @foreach (var product in Products)
+            {
+                <NavLink href=@($"/shop/product/{product.Id}")>
+                    <Card class="h-full">
+                        <CardHeader/>
+                        <CardContent>
+                            <img alt="Product Image" src="/images/products/@(product.Id).png"/>
+                        </CardContent>
+                        <CardHeader>
+                            <CardTitle class="text-ellipsis whitespace-nowrap overflow-hidden">@product.Name</CardTitle>
+                            <CardDescription>$@(product.Price / 100.0)</CardDescription>
+                        </CardHeader>
+                    </Card>
+                </NavLink>
+            }
+        </div>
     </section>
 </main>
 
 @code {
     [Parameter]
     public string? Slug { get; set; }
-    
-    ProductCategory[] ProductCategories { get; set; }
-    Product[] Products { get; set; }
+
+    ProductCategory[] ProductCategories { get; set; } = default!;
+    Product[] Products { get; set; } = default!;
     
     protected override async Task OnInitializedAsync()
     {
-        var context = DbFactory.CreateDbContext();
+        var context = await DbFactory.CreateDbContextAsync();
         ProductCategories = await context.ProductCategories.ToArrayAsync();
         Products = Slug == null ? await context.Products.ToArrayAsync() : await context.Products.Where((e) => e.ProductCategory.Id == int.Parse(Slug)).ToArrayAsync();
-    }
-
-    private string ProductCategoryToHref(ProductCategory productCategory)
-    {
-        return $"/shop/browse/{productCategory.Id}";
-    }
-
-    private string ProductToHref(Product product)
-    {
-        return $"/shop/product/{product.Id}";
     }
 }

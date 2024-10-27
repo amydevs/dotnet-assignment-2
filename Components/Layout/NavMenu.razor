@@ -2,7 +2,10 @@
 @using PetShop.Components.Icons
 @using PetShop.Components.UI
 @using Microsoft.EntityFrameworkCore
+@using PetShop.Lib.Services.NavMenuStateService
 @inject IDbContextFactory<ShopContext> DbFactory
+@inject INavMenuStateService NmState
+@implements IDisposable
 
 <div class="flex justify-between items-center h-36 px-4">
     <NavLink href="/">
@@ -19,48 +22,51 @@
         </nav>
     </div>
     <div class="flex">
-        <Button @onclick="() => { CurrentNavMenuState = NavMenuState.CartOpen; }">
+        <Button class="relative" @onclick="() => { NmState.State = NavMenuState.CartOpen; }">
             <CartIcon/>
+            <div class="absolute bottom-0 right-0 bg-primary rounded-full h-6 w-6 text-sm flex items-center justify-center @(!Context.CartProducts.AsNoTracking().Any() ? "hidden" : "")">
+                @Context.CartProducts.AsNoTracking().Count()
+            </div>
         </Button>
-        <Button class="md:hidden" @onclick="() => { CurrentNavMenuState = NavMenuState.NavOpen; }">
+        <Button class="md:hidden" @onclick="() => { NmState.State = NavMenuState.NavOpen; }">
             <MenuIcon />
         </Button>
     </div>
 </div>
-<div class="fixed inset-0 flex @(CurrentNavMenuState == NavMenuState.NavOpen ? "" : "hidden") md:hidden">
-    <div class="flex-1 bg-black/20" @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }"></div>
+<div class="fixed inset-0 flex @(NmState.State == NavMenuState.NavOpen ? "" : "hidden") md:hidden">
+    <div class="flex-1 bg-black/20" @onclick="() => { NmState.State = NavMenuState.Default; }"></div>
     <div class="bg-background max-w-xl w-full px-8 py-14 space-y-5">
         <div class="border-b border-border pb-5 flex">
             <h2 class="text-primary font-semibold text-3xl flex-1">
                 Menu
             </h2>
-            <Button @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }">
+            <Button @onclick="() => { NmState.State = NavMenuState.Default; }">
                 <XIcon />
             </Button>
         </div>
         <nav class="flex flex-col gap-5">
             @foreach (Route route in _routes)
             {
-                <NavLink @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }" class="text-foreground/50 hover:text-foreground active:text-foreground" href=@route.Href Match=@route.Match>
+                <NavLink @onclick="() => { NmState.State = NavMenuState.Default; }" class="text-muted-foreground hover:text-foreground active:text-foreground" href=@route.Href Match=@route.Match>
                     @route.Title
                 </NavLink>
             }
         </nav>
     </div>
 </div>
-<div class="fixed inset-0 flex @(CurrentNavMenuState == NavMenuState.CartOpen ? "" : "hidden")">
-    <div class="flex-1 bg-black/20" @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }"></div>
+<div class="fixed inset-0 flex @(NmState.State == NavMenuState.CartOpen ? "" : "hidden")">
+    <div class="flex-1 bg-black/20" @onclick="() => { NmState.State = NavMenuState.Default; }"></div>
     <div class="bg-background max-w-xl w-full px-8 py-14 flex flex-col gap-5 relative">
         <div class="border-b border-border pb-5 flex">
             <h2 class="text-primary font-semibold text-3xl flex-1">
-                Cart
+                Cart Summary
             </h2>
-            <Button @onclick="() => { CurrentNavMenuState = NavMenuState.Default; }">
+            <Button @onclick="() => { NmState.State = NavMenuState.Default; }">
                 <XIcon />
             </Button>
         </div>
         <div class="flex flex-col gap-5 flex-1 overflow-y-auto">
-            @foreach (CartProduct cartProduct in Context!.CartProducts.AsNoTracking())
+            @foreach (CartProduct cartProduct in Context.CartProducts.AsNoTracking())
             {
                 <div class="flex h-32 gap-3 w-full">
                     <img src="images/products/@(cartProduct.ProductId).png" />
@@ -95,15 +101,29 @@
                     $@(Context.CartProducts.AsNoTracking().ToArray().Aggregate(0, (acc, e) => acc + e.Product.Price * e.Quantity) / 100.0)
                 </span>
             </span>
-            <Button class="w-full bg-primary text-primary-foreground">
-                Checkout
-            </Button>
+            <div class="flex gap-3">
+                <Button class="border border-border w-full">
+                    <AsChild Context="buttonAttributes">
+                        <NavLink @attributes="buttonAttributes" href="/cart" @onclick="() => { NmState.State = NavMenuState.Default; }">
+                            View Cart
+                        </NavLink>
+                    </AsChild>
+                </Button>
+                <Button class="bg-primary text-primary-foreground w-full">
+                    <AsChild Context="buttonAttributes">
+                        <NavLink @attributes="buttonAttributes" href="/checkout" @onclick="() => { NmState.State = NavMenuState.Default; }">
+                            Checkout
+                        </NavLink>
+                    </AsChild>
+                </Button>
+            </div>
+            
+            
         </div>
     </div>
 </div>
 
 @code {
-
     private struct Route
     {
         public string Href { get; set; }
@@ -120,11 +140,6 @@
         },
         new Route
         {
-            Href = "/about",
-            Title = "About Us",
-        },
-        new Route
-        {
             Href = "/shop",
             Title = "Shop",
         },
@@ -135,24 +150,17 @@
         },
     ];
     
-    private enum NavMenuState
-    {
-        Default,
-        NavOpen,
-        CartOpen,
-    }
-
-    private NavMenuState CurrentNavMenuState { get; set; } = NavMenuState.Default;
-    private ShopContext? Context { get; set; }
+    private ShopContext Context { get; set; } = default!;
     
     protected override async Task OnInitializedAsync()
     {
         Context = await DbFactory.CreateDbContextAsync();
+        NmState.OnStateChanged += OnStateChange;
     }
 
     private async Task SetCartProductQuantity(CartProduct cartProduct, int quantity)
     {
-        Context!.Update(cartProduct);
+        Context.Update(cartProduct);
         if (quantity == 0)
         {
             Context.CartProducts.Remove(cartProduct);
@@ -164,5 +172,15 @@
         await Context.SaveChangesAsync();
         // manually untrack all in context
         Context.ChangeTracker.Clear();
+    }
+
+    public void Dispose()
+    {
+        NmState.OnStateChanged -= OnStateChange;
+    }
+    
+    public void OnStateChange()
+    {
+        InvokeAsync(StateHasChanged);
     }
 }

@@ -1,0 +1,11 @@
+@if (ChildContent != null)
+{
+    @ChildContent(AdditionalAttributes)
+}
+
+@code {
+    [Parameter] public RenderFragment<IDictionary<string, object>?>? ChildContent { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public IDictionary<string, object>? AdditionalAttributes { get; set; }
+}

@@ -1,0 +1,107 @@
+@page "/cart"
+@rendermode InteractiveServer
+@using Microsoft.EntityFrameworkCore
+@using PetShop.Components.UI
+@using PetShop.Components.Icons
+@inject IDbContextFactory<ShopContext> DbFactory
+
+<PageTitle>Cart</PageTitle>
+
+<main class="space-y-3">
+    <section class="auto-limit-w flex flex-col p-4 gap-6 min-h-[calc(100vh-9rem)]">
+        <h2 class="font-semibold text-2xl md:text-4xl text-primary">Cart (@Context.CartProducts.AsNoTracking().Count())</h2>
+        <div class="flex flex-col md:flex-row gap-8 flex-1">
+            <div class="flex flex-col gap-5 flex-1">
+                @foreach (CartProduct cartProduct in Context!.CartProducts.AsNoTracking())
+                {
+                    <div class="flex h-32 gap-3 w-full">
+                        <img src="images/products/@(cartProduct.ProductId).png" />
+                        <div class="flex flex-col justify-center gap-3 w-full">
+                            <span class="text-ellipsis overflow-hidden whitespace-nowrap min-w-full w-0">
+                                @cartProduct.Product.Name
+                            </span>
+                            <span>
+                                $@(cartProduct.Product.Price / 100.0)
+                            </span>
+                            <div class="flex items-center gap-3 justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span>
+                                        Quantity:
+                                    </span>
+                                    <Input class="!w-16" value="@cartProduct.Quantity" @onchange="async (e) => { await SetCartProductQuantity(cartProduct, e.Value == null ? 0 : int.Parse((string)e.Value)); }" type="number"/>
+                                </div>
+                                <Button @onclick="async () => { await SetCartProductQuantity(cartProduct, 0); }" class="bg-destructive text-destructive-foreground">
+                                    <XIcon />
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="w-[1px] bg-border hidden md:inline"></div>
+            <div class="flex flex-col gap-5">
+                <div class="space-y-1">
+                    <div class="font-semibold text-lg">Estimate Shipping</div>
+                    <div>Please enter your postcode to estimate shipping:</div>
+                    <Input value="@PostcodeValue" @oninput="(e) => PostcodeValue = (string)e.Value!" placeholder="2000" type="text" inputmode="numeric" pattern="\d*"/>
+                </div>
+                <div class="h-[1px] bg-border"></div>
+                <div class="grid grid-cols-2 auto-rows-min min-w-96 gap-2">
+                    <span class="text-muted-foreground">Shipping</span>
+                    <span class="text-muted-foreground text-right">@(Shipping == 0 ? "-" : "AUD $" + (Shipping / 100.0))</span>
+
+                    <span class="text-muted-foreground">Duties and Taxes</span>
+                    <span class="text-muted-foreground text-right">FREE</span>
+
+                    <span class="text-lg font-semibold">Total (@Context.CartProducts.Count())</span>
+                    <span class="text-lg font-semibold text-right">AUD $@(Total / 100.0)</span>
+                </div>
+                <div class="h-[1px] bg-border"></div>
+                <Button class="bg-primary text-primary-foreground col-span-2">
+                    <AsChild Context="buttonAttributes">
+                        <NavLink @attributes="buttonAttributes" href=@($"/checkout" + (PostcodeValue.Length >= 4 && int.TryParse(PostcodeValue, out _) ? $"?postcode={PostcodeValue}" : ""))>
+                            Go To Checkout
+                        </NavLink>
+                    </AsChild>
+                </Button>
+            </div>
+        </div>
+    </section>
+</main>
+
+@code {
+    private ShopContext Context { get; set; } = default!;
+    private string PostcodeValue { get; set; } = default!;
+
+    private int Total
+    {
+        get
+        {
+            return Context.CartProducts.AsNoTracking().ToList().Aggregate(0, (acc, e) => acc + e.Product.Price * e.Quantity) + Shipping;
+        }
+    }
+
+    private int Shipping => PostcodeValue.Length >= 4 ? 2000 : 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Context = await DbFactory.CreateDbContextAsync();
+        PostcodeValue = "";
+    }
+    
+    private async Task SetCartProductQuantity(CartProduct cartProduct, int quantity)
+    {
+        Context!.Update(cartProduct);
+        if (quantity == 0)
+        {
+            Context.CartProducts.Remove(cartProduct);
+        }
+        else
+        {
+            cartProduct.Quantity = quantity;
+        }
+        await Context.SaveChangesAsync();
+        // manually untrack all in context
+        Context.ChangeTracker.Clear();
+    }
+}
