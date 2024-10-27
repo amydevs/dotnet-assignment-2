@@ -1,8 +1,118 @@
 ﻿@page "/user/bookings"
 @rendermode InteractiveServer
+@using PetShop.Components.UI
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ShopContext> DbFactory
 
-
+<main>
+    <section class="auto-limit-w flex flex-col p-4 gap-6 min-h-[calc(100vh-9rem)]">
+        <h2 class="font-semibold text-2xl md:text-4xl text-primary">Your Appointments</h2>
+        <div class="overflow-auto max-w-full flex-1">
+            <table class="text-left min-w-[900px] w-full">
+                <thead>
+                <tr>
+                    <th class="px-6 py-4">
+                        No.
+                    </th>
+                    <th class="px-6 py-4">
+                        Appointment Type
+                    </th>
+                    <th class="px-6 py-4">
+                        Pet Type
+                    </th>
+                    <th class="px-6 py-4">
+                        Pet Name
+                    </th>
+                    <th class="px-6 py-4">
+                        Date
+                    </th>
+                    <th class="px-6 py-4">
+                        Actions
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var booking in Bookings)
+                {
+                <tr class="border-b border-border">
+                    <td class="px-6 py-4">
+                        @booking.Id
+                    </td>
+                    <td class="px-6 py-4">
+                        @switch (booking.BookingType)
+                        {
+                            case BookingType.VetAndCheckup:
+                            {
+                                <span>Vet and Checkup</span>
+                                break;
+                            }
+                            case BookingType.PetGrooming:
+                            {
+                                <span>Pet Grooming</span>
+                                break;
+                            }
+                            case BookingType.PetSitting:
+                            {
+                                <span>Pet Sitting</span>
+                                break;
+                            }
+                        }
+                    </td>
+                    <td class="px-6 py-4">
+                        @switch (booking.PetType)
+                        {
+                            case PetType.Cat:
+                            {
+                                <span>Cat</span>
+                                break;
+                            }
+                            case PetType.Dog:
+                            {
+                                <span>Dog</span>
+                                break;
+                            }
+                            case PetType.Bird:
+                            {
+                                <span>Bird</span>
+                                break;
+                            }
+                            case PetType.Reptile:
+                            {
+                                <span>Reptile</span>
+                                break;
+                            }
+                        }
+                    </td>
+                    <td class="px-6 py-4">
+                        @booking.PetName
+                    </td>
+                    <td class="px-6 py-4">
+                        @booking.BookingDate.ToShortDateString()
+                    </td>
+                    <td class="px-6 py-4">
+                        <Button class="bg-primary text-primary-foreground">
+                            <AsChild Context="buttonAttributes">
+                                <NavLink @attributes="buttonAttributes" href=@($"/bookings/booking/{booking.Id}")>
+                                    Details
+                                </NavLink>
+                            </AsChild>
+                        </Button>
+                    </td>
+                </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
 
 @code {
-    
+    [Parameter] public string Slug { get; set; } = default!;
+    public Booking[] Bookings { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var context = await DbFactory.CreateDbContextAsync();
+        Bookings = await context.Bookings.ToArrayAsync();
+    }
 }

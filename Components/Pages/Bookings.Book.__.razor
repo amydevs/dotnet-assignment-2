@@ -127,14 +127,17 @@
             Model = (await context.Bookings.FindAsync(int.Parse(Slug)))!;
             return;
         }
-        Model = new Booking
-        {
-            BookingDate = DateTime.Now
-        };
+
+        Model = new Booking();
+        Model.BookingDate = DateTime.Now;
     }
 
     private async Task Submit()
     {
+        if (Model.PetAllergies == null)
+        {
+            Model.PetAllergies = "";
+        }
         var context = await DbFactory.CreateDbContextAsync();
         var dbModel =  await context.Bookings.FindAsync(Model.Id);
         context.ChangeTracker.Clear();

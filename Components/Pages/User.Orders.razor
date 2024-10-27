@@ -1,9 +1,67 @@
-<h3>User_Orders</h3>
+@page "/user/orders"
+@rendermode InteractiveServer
+@using PetShop.Components.UI
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<ShopContext> DbFactory
 
-<table>
-    
-</table>
+<main>
+    <section class="auto-limit-w flex flex-col p-4 gap-6 min-h-[calc(100vh-9rem)]">
+        <h2 class="font-semibold text-2xl md:text-4xl text-primary">Your Orders</h2>
+        <div class="overflow-auto max-w-full flex-1">
+            <table class="text-left min-w-[900px] w-full">
+                <thead>
+                <tr>
+                    <th class="px-6 py-4">
+                        No.
+                    </th>
+                    <th class="px-6 py-4">
+                        Sent To Address
+                    </th>
+                    <th class="px-6 py-4">
+                        Total
+                    </th>
+                    <th class="px-6 py-4">
+                        Actions
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var order in Orders)
+                {
+                <tr class="border-b border-border">
+                    <td class="px-6 py-4">
+                        @order.Id
+                    </td>
+                    <td class="px-6 py-4">
+                        @order.Address
+                    </td>
+                    <td class="px-6 py-4">
+                        $@(order.Total / 100.0)
+                    </td>
+                    <td class="px-6 py-4">
+                        <Button class="bg-primary text-primary-foreground">
+                            <AsChild Context="buttonAttributes">
+                                <NavLink @attributes="buttonAttributes" href=@($"/orders/order/{order.Id}")>
+                                    Details
+                                </NavLink>
+                            </AsChild>
+                        </Button>
+                    </td>
+                </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
 
 @code {
-    
+    [Parameter] public string Slug { get; set; } = default!;
+    public Order[] Orders { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var context = await DbFactory.CreateDbContextAsync();
+        Orders = await context.Orders.ToArrayAsync();
+    }
 }

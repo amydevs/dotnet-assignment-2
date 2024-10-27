@@ -62,9 +62,6 @@
                     break;
                 }
             }
-
-
-
             <span>
                 Owner Name
             </span>
@@ -129,12 +126,8 @@
                     </NavLink>
                 </AsChild>
             </Button>
-            <Button class="bg-destructive text-destructive-foreground">
-                <AsChild Context="buttonAttributes">
-                    <NavLink @attributes="buttonAttributes" @onclick="CancelBooking">
-                        Cancel Booking
-                    </NavLink>
-                </AsChild>
+            <Button class="bg-destructive text-destructive-foreground" @onclick="CancelBooking">
+                Cancel Booking
             </Button>
         </div>
     </section>

@@ -46,10 +46,9 @@
 </main>
 
 @code {
-    [Parameter]
-    public string Slug { get; set; }
+    [Parameter] public string Slug { get; set; } = default!;
 
-    Product Product { get; set; }
+    Product Product { get; set; } = default!;
     
     protected override async Task OnInitializedAsync()
     {

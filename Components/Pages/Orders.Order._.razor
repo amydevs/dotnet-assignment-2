@@ -17,7 +17,7 @@
             @foreach (OrderProduct orderProduct in OrderProducts)
             {
                 <div class="flex h-32 gap-5 w-full">
-                    <img src="images/products/@(orderProduct.ProductId).png" />
+                    <img alt="Product Image" src="images/products/@(orderProduct.ProductId).png" />
                     <div class="flex flex-col justify-center gap-3 w-full">
                         <span>
                             @orderProduct.Product.Name

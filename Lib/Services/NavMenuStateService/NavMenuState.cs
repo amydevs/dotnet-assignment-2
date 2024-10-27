@@ -5,4 +5,5 @@ public enum NavMenuState
     Default,
     NavOpen,
     CartOpen,
+    UserOpen,
 }
