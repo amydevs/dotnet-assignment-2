@@ -8,6 +8,8 @@ To run this project, you can open up the `PetShop.sln` file in Visual Studio. Th
 
 You may also use `dotnet run` if you prefer to use the command line.
 
+If you would like to reset the local SQLite database, simply extract and replace the `shop.db` file in this directory from the original `.zip` file this project was in whilst the program is NOT RUNNING.
+
 There should be no further setup needed. The extra setup details below are simply for the development environment to setup the local SQLite database file and runs the TailwindCSS build step.
 
 You do not need to do this, as the included `shop.db` file has already had all the EF Core migrations ran. Furthermore, the CSS file in `wwwroot/app.css` is already the version that contains all the necessary utility classes used in the project.
