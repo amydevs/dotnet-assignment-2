@@ -264,3 +264,4 @@ __pycache__/
 shop.db*
 wwwroot/images/products
 wwwroot/app.css
+bundle.zip

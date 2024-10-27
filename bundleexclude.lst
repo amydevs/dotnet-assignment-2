@@ -1,0 +1,17 @@
+package.json
+package-lock.json
+.gitignore
+bundle.sh
+bundleexclude.lst
+tailwind.config.js
+
+node_modules/
+node_modules/**
+.git/
+.git/**
+bin/
+bin/**
+obj/
+obj/**
+.idea/
+.idea/**
