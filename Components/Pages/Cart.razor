@@ -3,7 +3,9 @@
 @using Microsoft.EntityFrameworkCore
 @using PetShop.Components.UI
 @using PetShop.Components.Icons
+@using PetShop.Lib.Services.NavMenuStateService
 @inject IDbContextFactory<ShopContext> DbFactory
+@inject INavMenuStateService NmState
 
 <PageTitle>Cart</PageTitle>
 
@@ -41,6 +43,7 @@
             <div class="w-[1px] bg-border hidden md:inline"></div>
             <div class="flex flex-col gap-5">
                 <div class="space-y-1">
+                    <div class="h-[1px] bg-border md:hidden mb-3"></div>
                     <div class="font-semibold text-lg">Estimate Shipping</div>
                     <div>Please enter your postcode to estimate shipping:</div>
                     <Input value="@PostcodeValue" @oninput="(e) => PostcodeValue = (string)e.Value!" placeholder="2000" type="text" inputmode="numeric" pattern="\d*"/>
@@ -57,7 +60,7 @@
                     <span class="text-lg font-semibold text-right">AUD $@(Total / 100.0)</span>
                 </div>
                 <div class="h-[1px] bg-border"></div>
-                <Button class="bg-primary text-primary-foreground col-span-2">
+                <Button class=@("bg-primary text-primary-foreground " + (!Context.CartProducts.Any() ? "opacity-30 pointer-events-none" : ""))>
                     <AsChild Context="buttonAttributes">
                         <NavLink @attributes="buttonAttributes" href=@($"/checkout" + (PostcodeValue.Length >= 4 && int.TryParse(PostcodeValue, out _) ? $"?postcode={PostcodeValue}" : ""))>
                             Go To Checkout
@@ -88,7 +91,12 @@
         Context = await DbFactory.CreateDbContextAsync();
         PostcodeValue = "";
     }
-    
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        NmState.OnStateChanged?.Invoke();
+    }
+
     private async Task SetCartProductQuantity(CartProduct cartProduct, int quantity)
     {
         Context!.Update(cartProduct);

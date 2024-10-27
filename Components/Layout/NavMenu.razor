@@ -109,7 +109,7 @@
                         </NavLink>
                     </AsChild>
                 </Button>
-                <Button class="bg-primary text-primary-foreground w-full">
+                <Button class=@("bg-primary text-primary-foreground w-full " + (!Context.CartProducts.Any() ? "opacity-30 pointer-events-none" : ""))>
                     <AsChild Context="buttonAttributes">
                         <NavLink @attributes="buttonAttributes" href="/checkout" @onclick="() => { NmState.State = NavMenuState.Default; }">
                             Checkout
