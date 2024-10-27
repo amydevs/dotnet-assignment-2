@@ -1,7 +1,6 @@
 PetShop/package.json
 PetShop/package-lock.json
 PetShop/tailwind.config.js
-PetShop/shop.db.bak
 PetShop/node_modules/
 PetShop/node_modules/**
 

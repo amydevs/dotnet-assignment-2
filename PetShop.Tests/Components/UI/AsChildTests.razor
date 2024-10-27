@@ -1,0 +1,14 @@
+﻿@using PetShop.Components.UI
+@inherits BunitTestContext
+
+@code {
+    [Test]
+    public void ContextAttributesAreSpread()
+    {
+        // Arrange
+        var cut = Render(@<AsChildParentWrapper a="b" b="c" c="d"><div @attributes="context"></div></AsChildParentWrapper>);
+
+        // Assert that content of the paragraph shows counter at zero
+        cut.Find("div").MarkupMatches("<div a=\"b\" b=\"c\" c=\"d\"></div>");
+    }
+}

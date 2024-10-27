@@ -10,7 +10,9 @@ You may also use `dotnet run` in the `PetShop` folder if you prefer to use the c
 
 If you would like to reset the local SQLite database, simply extract and replace the `shop.db` file in the `PetShop` directory from the original `.zip` file this project was in whilst the program is NOT RUNNING.
 
-There should be no further setup needed. The extra setup details below are simply for the development environment to setup the local SQLite database file and runs the TailwindCSS build step.
+PLEASE DO NOT TOUCH THE `shop.db.bak` file. This is a clean version of the database that is used by the unit-tests in the `PetShop.Tests` project.
+
+There should be no further setup needed. The extra setup details below are simply for the development environment to set up the local SQLite database file and runs the TailwindCSS build step.
 
 You do not need to do this, as the included `shop.db` file has already had all the EF Core migrations ran. Furthermore, the CSS file in `wwwroot/app.css` is already the version that contains all the necessary utility classes used in the project.
 
@@ -27,7 +29,7 @@ npm i
 Before running the application, make sure the database is up to date with:
 
 ```bash
-dotnet ef database update
+dotnet ef database update && ./postdbupdate.sh
 ```
 
 If you get errors, delete `shop.db` and retry again.

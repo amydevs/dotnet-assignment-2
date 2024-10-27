@@ -37,7 +37,7 @@
     </div>
 </div>
 
-<div class="fixed inset-0 flex @(NmState.State == NavMenuState.NavOpen ? "" : "hidden") md:hidden">
+<div id="mobile-nav" class="fixed inset-0 flex @(NmState.State == NavMenuState.NavOpen ? "" : "hidden") md:hidden">
     <div class="flex-1 bg-black/20" @onclick="() => { NmState.State = NavMenuState.Default; }"></div>
     <div class="bg-background max-w-xl w-full px-8 py-14 space-y-5">
         <div class="border-b border-border pb-5 flex">
@@ -59,7 +59,7 @@
     </div>
 </div>
 
-<div class="fixed inset-0 flex @(NmState.State == NavMenuState.UserOpen ? "" : "hidden")">
+<div id="user-nav" class="fixed inset-0 flex @(NmState.State == NavMenuState.UserOpen ? "" : "hidden")">
     <div class="flex-1 bg-black/20" @onclick="() => { NmState.State = NavMenuState.Default; }"></div>
     <div class="bg-background max-w-xl w-full px-8 py-14 space-y-5">
         <div class="border-b border-border pb-5 flex">
@@ -81,7 +81,7 @@
     </div>
 </div>
 
-<div class="fixed inset-0 flex @(NmState.State == NavMenuState.CartOpen ? "" : "hidden")">
+<div id="cart-nav" class="fixed inset-0 flex @(NmState.State == NavMenuState.CartOpen ? "" : "hidden")">
     <div class="flex-1 bg-black/20" @onclick="() => { NmState.State = NavMenuState.Default; }"></div>
     <div class="bg-background max-w-xl w-full px-8 py-14 flex flex-col gap-5 relative">
         <div class="border-b border-border pb-5 flex">

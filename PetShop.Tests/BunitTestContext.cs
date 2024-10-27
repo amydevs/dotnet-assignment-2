@@ -1,5 +1,6 @@
 using Bunit;
 using NUnit.Framework;
+using PetShop.Lib.Services.NavMenuStateService;
 
 namespace PetShop.Tests;
 
@@ -10,7 +11,12 @@ namespace PetShop.Tests;
 public abstract class BunitTestContext : TestContextWrapper
 {
 	[SetUp]
-	public void Setup() => TestContext = new Bunit.TestContext();
+	public void Setup()
+	{
+		TestContext = new Bunit.TestContext();
+		TestContext.Services.AddDbContextFactory<ShopContext>();
+		TestContext.Services.AddSingleton<INavMenuStateService>(new NavMenuStateService());
+	}
 
 	[TearDown]
 	public void TearDown() => TestContext?.Dispose();

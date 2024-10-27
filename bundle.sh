@@ -1,6 +1,7 @@
+#!/usr/bin/env sh
+rm -f PetShop/shop.db
+cp PetShop/shop.db.bak PetShop/shop.db
 cd PetShop
-rm -f shop.db
-cp shop.db.bak shop.db
 npm run mix
 cd -
 rm -f ./bundle.zip
