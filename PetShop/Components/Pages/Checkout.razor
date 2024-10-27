@@ -2,8 +2,10 @@
 @rendermode InteractiveServer
 @using Microsoft.EntityFrameworkCore
 @using PetShop.Components.UI
+@using PetShop.Lib.Services.NavMenuStateService;
 @inject IDbContextFactory<ShopContext> DbFactory
 @inject NavigationManager Navigation
+@inject INavMenuStateService NmState
 
 <PageTitle>Checkout</PageTitle>
 
@@ -74,7 +76,7 @@
 @code {
     [SupplyParameterFromForm] private Order Model { get; set; } = default!;
     private ShopContext Context { get; set; } = default!;
-    
+
     private int Total
     {
         get
@@ -82,7 +84,7 @@
             return Context.CartProducts.ToList().Aggregate(0, (acc, e) => acc + e.Product.Price * e.Quantity) + Shipping;
         }
     }
-    
+
     private int Shipping => (Model.Address ?? "").Length != 0 ? 2000 : 0;
 
     protected override async Task OnInitializedAsync()
@@ -112,6 +114,7 @@
         }
         Context.CartProducts.RemoveRange(Context.CartProducts);
         await Context.SaveChangesAsync();
+        NmState.OnStateChanged?.Invoke();
         Navigation.NavigateTo($"/orders/order/{dbModel.Entity.Id}");
     }
 }

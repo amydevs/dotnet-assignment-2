@@ -23,7 +23,6 @@ public class ShopContext: DbContext
         // var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Directory.GetCurrentDirectory();
         DbPath = Path.Join(path, "shop.db");
-        Console.WriteLine(DbPath);
     }
     
     // The following configures EF to create a Sqlite database file in the

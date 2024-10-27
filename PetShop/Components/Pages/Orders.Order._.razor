@@ -81,7 +81,7 @@
 @code {
     [Parameter] public string Slug { get; set; } = default!;
     private Order Model { get; set; } = default!;
-    public OrderProduct[] OrderProducts { get; set; } = default!;
+    private OrderProduct[] OrderProducts { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
@@ -89,7 +89,7 @@
         Model = (await context.Orders.FindAsync(int.Parse(Slug)))!;
         OrderProducts = await (
             from product in context.OrderProducts
-            where product.ProductId == Model.Id
+            where product.OrderId == Model.Id
             select product
         ).ToArrayAsync();
     }
