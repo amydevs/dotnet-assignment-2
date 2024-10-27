@@ -13,7 +13,7 @@ There should be no further setup needed. The extra setup details below are simpl
 You do not need to do this, as the included `shop.db` file has already had all the EF Core migrations ran. Furthermore, the CSS file in `wwwroot/app.css` is already the version that contains all the necessary utility classes used in the project.
 
 
-## Setup Dev Environment
+## Setup Dev Environment (For My Teammates)
 
 First install the necessary development dependencies:
 
