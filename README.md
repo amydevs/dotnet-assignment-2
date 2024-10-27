@@ -4,11 +4,11 @@
 
 Before running this project, make sure that you have the `ASP.NET and web development` workload installed via the `Visual Studio Installer`, as this project uses Blazor + ASP.NET. Please also make sure that you have .NET 8 installed.
 
-To run this project, you can open up the `PetShop.sln` file in Visual Studio. There will be to run configurations available to you. Make sure to select the `http` option when running the project, as it will be hosted on `localhost`.
+To run this project, you can open up the `PetShop.sln` file in Visual Studio. You can then run the `PetShop` project, and access it via the url provided in the command prompt. This should be `http://localhost:5000`.
 
-You may also use `dotnet run` if you prefer to use the command line.
+You may also use `dotnet run` in the `PetShop` folder if you prefer to use the command line.
 
-If you would like to reset the local SQLite database, simply extract and replace the `shop.db` file in this directory from the original `.zip` file this project was in whilst the program is NOT RUNNING.
+If you would like to reset the local SQLite database, simply extract and replace the `shop.db` file in the `PetShop` directory from the original `.zip` file this project was in whilst the program is NOT RUNNING.
 
 There should be no further setup needed. The extra setup details below are simply for the development environment to setup the local SQLite database file and runs the TailwindCSS build step.
 

@@ -25,13 +25,5 @@
     <_ContentIncludedByDefault Remove="PetShop.Tests\obj\project.assets.json" />
     <_ContentIncludedByDefault Remove="PetShop.Tests\obj\project.packagespec.json" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="PetShop\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="PetShop\Properties\launchSettings.json" />
-  </ItemGroup>
   
 </Project>
